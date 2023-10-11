@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: admin
+      changes:
+        - createTable:
+            tableName: TBPost_image
+            columns:
+              - column:
+                  name: post_image_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: post_image_url
+                  type: varchar(250)
+              - column:
+                  name: post_image_post_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_post_image_post_id
+                    references: TBUser_post(post_id)

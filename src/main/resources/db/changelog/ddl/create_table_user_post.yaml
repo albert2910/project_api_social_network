@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: admin
+      changes:
+        - createTable:
+            tableName: TBUser_post
+            columns:
+              - column:
+                  name: post_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: post_content
+                  type: varchar(250)
+              - column:
+                  name: post_user_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_user_post_user_id
+                    references: TBUser(user_id)
+              - column:
+                  name: post_user_time_create
+                  type: datetime

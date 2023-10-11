@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: admin
+      changes:
+        - createTable:
+            tableName: TBUser
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_name
+                  type: varchar(30)
+              - column:
+                  name: user_full_name
+                  type: varchar(50)
+              - column:
+                  name: user_avatar
+                  type: varchar(250)
+              - column:
+                  name: user_password
+                  type: varchar(200)
+              - column:
+                  name: user_email
+                  type: varchar(30)
+              - column:
+                  name: user_birthdate
+                  type: date
+              - column:
+                  name: user_address
+                  type: varchar(250)
+              - column:
+                  name: user_role
+                  type: varchar(30)
+              - column:
+                  name: user_otp
+                  type: varchar(200)
+              - column:
+                  name: user_time_create_otp
+                  type: datetime
