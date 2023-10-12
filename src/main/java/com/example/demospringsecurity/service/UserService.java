@@ -184,6 +184,7 @@ public class UserService {
                 userInfoUpdate.setUserAddress(userInfo.get().getUserAddress());
             }
             userInfoUpdate.setUserPassword(userInfo.get().getUserPassword());
+            userInfoUpdate.setRoles("ROLE_USER");
             userInfoRepository.save(userInfoUpdate);
             changeInfoUserResponse.setStatus("200");
             changeInfoUserResponse.setMessage("Update success");
