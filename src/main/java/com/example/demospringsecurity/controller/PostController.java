@@ -2,6 +2,7 @@ package com.example.demospringsecurity.controller;
 
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.response.FileUploadResponse;
+import com.example.demospringsecurity.response.GetAllPostResponse;
 import com.example.demospringsecurity.response.UpPostResponse;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
@@ -37,8 +38,9 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
-    @PutMapping(value = "/edit-post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UpPostResponse editPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
+    @PutMapping(value = "/edit-post/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UpPostResponse editPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
+        upPostRequest.setPostId(postId);
         List<String> listImages = new ArrayList<>();
         if (multipartFiles != null) {
             for (MultipartFile multipartFile : multipartFiles) {
@@ -48,5 +50,10 @@ public class PostController {
         }
         upPostRequest.setPostUrlImages(listImages);
         return postService.upPost(upPostRequest);
+    }
+
+    @GetMapping("/all-posts")
+    public GetAllPostResponse getAllPosts() {
+        return postService.getAllPosts();
     }
 }

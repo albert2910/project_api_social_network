@@ -22,4 +22,9 @@ public class Image {
     @Column(name = "post_image_post_id")
     private int imagePostId;
 
+//    imageFlagDelete = 0 => exist
+//    imageFlagDelete = 1 => delete
+    @Column(name = "image_flag_delete")
+    private int imageFlagDelete;
+
 }

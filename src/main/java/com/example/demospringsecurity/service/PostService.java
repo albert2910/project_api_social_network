@@ -9,6 +9,7 @@ import com.example.demospringsecurity.model.UserPost;
 import com.example.demospringsecurity.repository.ImageRepository;
 import com.example.demospringsecurity.repository.UserInfoRepository;
 import com.example.demospringsecurity.repository.UserPostRepository;
+import com.example.demospringsecurity.response.GetAllPostResponse;
 import com.example.demospringsecurity.response.UpPostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -56,6 +57,7 @@ public class PostService {
                 Image image = new Image();
                 image.setImagePostId(userPostSaved.getPostId());
                 image.setImageUrl(listImage);
+                image.setImageFlagDelete(0);
                 Image imageSaved = imageRepository.save(image);
                 imageList.add(imageSaved);
             }
@@ -77,10 +79,12 @@ public class PostService {
         if (userPost.isPresent()) {
             Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.get().getPostUserId());
             if (userInfo.get().getUserId() == upPostRequest.getPostUserId()) {
-                List<Image> imageList = imageRepository.findImageByImagePostId(upPostRequest.getPostId());
+                List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),0);
                 if (!imageList.isEmpty()) {
                     for (Image image : imageList) {
-                        imageRepository.delete(image);
+                        System.out.println(image.getImageUrl());
+                        image.setImageFlagDelete(1);
+                        imageRepository.save(image);
                     }
                 }
                 List<String> imagesEdit = upPostRequest.getPostUrlImages();
@@ -90,6 +94,7 @@ public class PostService {
                         Image image = new Image();
                         image.setImageUrl(s);
                         image.setImagePostId(upPostRequest.getPostId());
+                        image.setImageFlagDelete(0);
                         Image imageSaved = imageRepository.save(image);
                         imagesEdited.add(imageSaved);
                     }
@@ -109,5 +114,24 @@ public class PostService {
 
         }
         return upPostResponse;
+    }
+
+    public GetAllPostResponse getAllPosts() {
+        GetAllPostResponse getAllPostResponse = new GetAllPostResponse();
+        getAllPostResponse.setStatus("200");
+        getAllPostResponse.setMessage("Get all!");
+        List<UserPost> userPostList = userPostRepository.findAll();
+        List<PostDto> postDtos = new ArrayList<>();
+        for (UserPost userPost : userPostList) {
+            PostDto postDto = postMapper.toDto(userPost);
+            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),0);
+            if(!imageList.isEmpty()) {
+                 postDto.setPostImages(imageList);
+            }
+            postDtos.add(postDto);
+        }
+
+        getAllPostResponse.setPosts(postDtos);
+        return getAllPostResponse;
     }
 }

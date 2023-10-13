@@ -22,3 +22,13 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_post_image_post_id
                     references: TBUser_post(post_id)
+  - changeSet:
+      id: 10
+      author: admin
+      changes:
+        - addColumn:
+            tableName: TBPost_image
+            columns:
+              - column:
+                  name: image_flag_delete
+                  type: int
