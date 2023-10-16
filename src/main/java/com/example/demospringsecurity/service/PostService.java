@@ -1,17 +1,13 @@
 package com.example.demospringsecurity.service;
 
 import com.example.demospringsecurity.dto.PostDto;
+import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.mapperImpl.PostMapper;
-import com.example.demospringsecurity.model.Comment;
-import com.example.demospringsecurity.model.Image;
-import com.example.demospringsecurity.model.UserInfo;
-import com.example.demospringsecurity.model.UserPost;
-import com.example.demospringsecurity.repository.CommentRepository;
-import com.example.demospringsecurity.repository.ImageRepository;
-import com.example.demospringsecurity.repository.UserInfoRepository;
-import com.example.demospringsecurity.repository.UserPostRepository;
+import com.example.demospringsecurity.model.*;
+import com.example.demospringsecurity.repository.*;
 import com.example.demospringsecurity.response.GetAllPostResponse;
+import com.example.demospringsecurity.response.LikeResponse;
 import com.example.demospringsecurity.response.UpPostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -41,9 +37,13 @@ public class PostService {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    LikeRepository likeRepository;
+
+
     public UpPostResponse upPost(UpPostRequest upPostRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UpPostResponse upPostResponse = new UpPostResponse();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
@@ -84,7 +84,8 @@ public class PostService {
         if (userPost.isPresent()) {
             Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.get().getPostUserId());
             if (userInfo.get().getUserId() == upPostRequest.getPostUserId()) {
-                List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),0);
+                List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
+                        0);
                 if (!imageList.isEmpty()) {
                     for (Image image : imageList) {
                         System.out.println(image.getImageUrl());
@@ -129,20 +130,59 @@ public class PostService {
         List<PostDto> postDtos = new ArrayList<>();
         for (UserPost userPost : userPostList) {
             PostDto postDto = postMapper.toDto(userPost);
-            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),0);
+            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
+                    0);
             List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
-            if(!imageList.isEmpty()) {
-                 postDto.setPostImages(imageList);
+            if (!imageList.isEmpty()) {
+                postDto.setPostImages(imageList);
             }
-            if(!commentList.isEmpty()) {
+            if (!commentList.isEmpty()) {
                 postDto.setPostComments(commentList);
             }
+            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
             postDtos.add(postDto);
         }
-
-
         getAllPostResponse.setPosts(postDtos);
         return getAllPostResponse;
+    }
+
+    public LikeResponse likePost(LikeRequest likeRequest) {
+        LikeResponse likeResponse = new LikeResponse();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            likeRequest.setUserId(userInfo.getUserId());
+        }
+        boolean checkLikePostIdUserId = likeRepository.existsByLikePostIdAndLikeUserId(likeRequest.getPostId(),
+                likeRequest.getUserId());
+        if (checkLikePostIdUserId) {
+            Like like = likeRepository.findLikeByLikePostIdAndLikeUserId(likeRequest.getPostId(),
+                    likeRequest.getUserId());
+            if (like.getLikeFlag() == 0) {
+                like.setLikeFlag(1);
+                likeRepository.save(like);
+                likeResponse.setMessage("Liked!");
+                likeResponse.setLiked(true);
+
+            } else {
+                like.setLikeFlag(0);
+                likeResponse.setMessage("Disliked");
+                likeResponse.setLiked(false);
+                likeRepository.save(like);
+            }
+            likeResponse.setStatus("200");
+
+        } else {
+            Like like = new Like();
+            like.setLikePostId(likeRequest.getPostId());
+            like.setLikeUserId(likeRequest.getUserId());
+            like.setLikeFlag(1);
+            likeResponse.setMessage("Liked!");
+            likeResponse.setLiked(true);
+            likeRepository.save(like);
+        }
+        return likeResponse;
     }
 
 }

@@ -1,14 +1,17 @@
 package com.example.demospringsecurity.controller;
 
+import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.model.Image;
 import com.example.demospringsecurity.response.FileUploadResponse;
 import com.example.demospringsecurity.response.GetAllPostResponse;
+import com.example.demospringsecurity.response.LikeResponse;
 import com.example.demospringsecurity.response.UpPostResponse;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +64,13 @@ public class PostController {
     @GetMapping("/all-posts")
     public GetAllPostResponse getAllPosts() {
         return postService.getAllPosts();
+    }
+
+    @PostMapping("/like-post/{postId}")
+    public ResponseEntity<?> likePost(@PathVariable int postId, @RequestBody LikeRequest likeRequest) {
+        likeRequest.setPostId(postId);
+        return new ResponseEntity<>(postService.likePost(likeRequest),
+                HttpStatus.OK);
     }
 
 
