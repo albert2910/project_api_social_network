@@ -29,4 +29,5 @@ public class UserPost {
     @Column(name = "post_user_time_create")
     private LocalDateTime postCreateDate;
 
+
 }

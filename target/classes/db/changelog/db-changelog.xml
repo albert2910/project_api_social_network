@@ -10,5 +10,7 @@
     <include file="/db/changelog/ddl/create_table_user_post.yaml" />
     <include file="/db/changelog/ddl/create_table_post_image.yaml" />
     <include file="/db/changelog/dml/insert_table_user.sql" />
+    <include file="/db/changelog/ddl/create_table_comment.yaml" />
+    <include file="/db/changelog/ddl/create_table_like.yaml" />
 
 </databaseChangeLog>

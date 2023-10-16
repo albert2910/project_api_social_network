@@ -54,9 +54,8 @@ public class SecurityConfig {
                         "/api/verify",
                         "/api/register",
                         "/api/forgot-password",
-                        "/api/change-password")
-//                        "/api/change-info",
-//                        "/api/up-post")
+                        "/api/change-password",
+                        "/api/get-avatar-user/{id}")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/**")

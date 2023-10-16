@@ -3,9 +3,11 @@ package com.example.demospringsecurity.service;
 import com.example.demospringsecurity.dto.PostDto;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.mapperImpl.PostMapper;
+import com.example.demospringsecurity.model.Comment;
 import com.example.demospringsecurity.model.Image;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.model.UserPost;
+import com.example.demospringsecurity.repository.CommentRepository;
 import com.example.demospringsecurity.repository.ImageRepository;
 import com.example.demospringsecurity.repository.UserInfoRepository;
 import com.example.demospringsecurity.repository.UserPostRepository;
@@ -35,6 +37,9 @@ public class PostService {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     public UpPostResponse upPost(UpPostRequest upPostRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -125,13 +130,19 @@ public class PostService {
         for (UserPost userPost : userPostList) {
             PostDto postDto = postMapper.toDto(userPost);
             List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),0);
+            List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
             if(!imageList.isEmpty()) {
                  postDto.setPostImages(imageList);
+            }
+            if(!commentList.isEmpty()) {
+                postDto.setPostComments(commentList);
             }
             postDtos.add(postDto);
         }
 
+
         getAllPostResponse.setPosts(postDtos);
         return getAllPostResponse;
     }
+
 }

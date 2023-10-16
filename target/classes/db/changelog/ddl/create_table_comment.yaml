@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11
+      author: admin
+      changes:
+        - createTable:
+            tableName: TBPost_comment
+            columns:
+              - column:
+                  name: comment_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: comment_content
+                  type: varchar(100)
+              - column:
+                  name: comment_post_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_comment_post_id
+                    references: TBUser_post(post_id)
+              - column:
+                  name: comment_user_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_comment_user_id
+                    references: TBUser(user_id)
+              - column:
+                  name: comment_date_create
+                  type: DATETIME

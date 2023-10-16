@@ -9,11 +9,11 @@ import com.example.demospringsecurity.model.PasswordResetToken;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.PasswordResetTokenRepository;
 import com.example.demospringsecurity.repository.UserInfoRepository;
-import com.example.demospringsecurity.response.ChangeInfoUserResponse;
-import com.example.demospringsecurity.response.PasswordChangeResponse;
-import com.example.demospringsecurity.response.PasswordResetTokenResponse;
-import com.example.demospringsecurity.response.RegisterResponse;
+import com.example.demospringsecurity.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -161,8 +161,15 @@ public class UserService {
     }
 
     public ChangeInfoUserResponse updateInfoUser(ChangeInfoUserRequest changeInfoUserRequest) {
-        Optional<UserInfo> userInfo = userInfoRepository.findByUserId(changeInfoUserRequest.getUserId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ChangeInfoUserResponse changeInfoUserResponse = new ChangeInfoUserResponse();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            changeInfoUserRequest.setUserId(userInfo.getUserId());
+        }
+        Optional<UserInfo> userInfo = userInfoRepository.findByUserId(changeInfoUserRequest.getUserId());
+
         if (userInfo.isPresent()) {
             UserInfo userInfoUpdate = userChangeInfoMapper.toEntity(changeInfoUserRequest);
             if (changeInfoUserRequest.getUserName() == null || changeInfoUserRequest.getUserName().isEmpty()) {
@@ -194,5 +201,8 @@ public class UserService {
             changeInfoUserResponse.setMessage("Not found user!");
         }
         return changeInfoUserResponse;
+    }
+    public UserInfo findUserById(int id) {
+        return userInfoRepository.findByUserId(id).get();
     }
 }

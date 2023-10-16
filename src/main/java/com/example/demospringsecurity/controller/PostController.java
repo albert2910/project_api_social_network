@@ -1,19 +1,25 @@
 package com.example.demospringsecurity.controller;
 
 import com.example.demospringsecurity.dto.request.UpPostRequest;
+import com.example.demospringsecurity.model.Image;
 import com.example.demospringsecurity.response.FileUploadResponse;
 import com.example.demospringsecurity.response.GetAllPostResponse;
 import com.example.demospringsecurity.response.UpPostResponse;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -56,4 +62,7 @@ public class PostController {
     public GetAllPostResponse getAllPosts() {
         return postService.getAllPosts();
     }
+
+
+
 }
