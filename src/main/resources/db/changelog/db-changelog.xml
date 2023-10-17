@@ -12,5 +12,6 @@
     <include file="/db/changelog/dml/insert_table_user.sql" />
     <include file="/db/changelog/ddl/create_table_comment.yaml" />
     <include file="/db/changelog/ddl/create_table_like.yaml" />
+    <include file="/db/changelog/ddl/create_table_friend.yaml" />
 
 </databaseChangeLog>

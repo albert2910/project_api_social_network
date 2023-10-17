@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "TBFriend")
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +22,9 @@ public class Friend {
     @Column(name = "id_user_sender")
     private int userSenderId;
 
+    //  status = 0 unfriend
+    //  status = 1 sending
+    //  status = 2 accept
     @Column(name = "status")
-//  status = 0 sending
-//  status = 1 accept
-//  status = 2 decline
     private int status;
 }

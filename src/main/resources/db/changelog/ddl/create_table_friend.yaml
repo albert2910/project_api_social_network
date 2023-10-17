@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 13
+      author: admin
+      changes:
+        - createTable:
+            tableName: TBFriend
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_user_receiver
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_friend_user_receiver_id
+                    references: TBUser(user_id)
+              - column:
+                  name: id_user_sender
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_friend_user_sender_id
+                    references: TBUser(user_id)
+              - column:
+                  name: status
+                  type: int

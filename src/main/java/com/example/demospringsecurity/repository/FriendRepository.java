@@ -1,0 +1,27 @@
+package com.example.demospringsecurity.repository;
+
+import com.example.demospringsecurity.model.Friend;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface FriendRepository extends JpaRepository<Friend, Integer> {
+    boolean existsFriendByUserReceiverIdAndAndUserSenderId(int idUserReceiver, int idUserSender);
+
+    boolean existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(int idUserReceiver, int idUserSender, int status);
+
+    Friend findFriendByUserReceiverIdAndAndUserSenderId(int idUserReceiver, int idUserSender);
+
+    List<Friend> findFriendByUserReceiverId(int idUserReceiver);
+
+    List<Friend> findFriendByUserReceiverIdAndAndStatus(int idUserReceiver, int status);
+
+    Friend findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(int idUserReceiver, int idUserSender, int status);
+
+    @Query("SELECT f FROM Friend f where (f.userReceiverId = :currentUserId and f.status = 2) or (f.userSenderId = :currentUserId and f.status = 2)")
+    List<Friend> findListFriendByCurrentUserId(@Param("currentUserId") int currentUserId);
+}
