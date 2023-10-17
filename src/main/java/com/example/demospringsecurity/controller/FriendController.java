@@ -1,6 +1,6 @@
 package com.example.demospringsecurity.controller;
 
-import com.example.demospringsecurity.dto.request.AddFriendRequest;
+import com.example.demospringsecurity.dto.request.FriendRequest;
 import com.example.demospringsecurity.response.FriendResponse;
 import com.example.demospringsecurity.response.GetFriendRequestsResponse;
 import com.example.demospringsecurity.response.GetListFriendResponse;
@@ -15,15 +15,21 @@ public class FriendController {
     FriendService friendService;
 
     @PostMapping("/add-friend/{userReceiverId}")
-    public FriendResponse addFriend(@PathVariable int userReceiverId, @RequestBody AddFriendRequest addFriendRequest) {
-        addFriendRequest.setUserReceiverId(userReceiverId);
-        return friendService.addFriend(addFriendRequest);
+    public FriendResponse addFriend(@PathVariable int userReceiverId, @RequestBody FriendRequest friendRequest) {
+        friendRequest.setUserReceiverId(userReceiverId);
+        return friendService.addFriend(friendRequest);
     }
 
     @PostMapping("/accept-friend/{userSenderId}")
-    public FriendResponse acceptFriend(@PathVariable int userSenderId, @RequestBody AddFriendRequest addFriendRequest) {
-        addFriendRequest.setUserSenderId(userSenderId);
-        return friendService.acceptFriend(addFriendRequest);
+    public FriendResponse acceptFriend(@PathVariable int userSenderId, @RequestBody FriendRequest friendRequest) {
+        friendRequest.setUserSenderId(userSenderId);
+        return friendService.acceptFriend(friendRequest);
+    }
+
+    @PostMapping("/unfriend/{userReceiverId}")
+    public FriendResponse unFriend(@PathVariable int userReceiverId, @RequestBody FriendRequest friendRequest) {
+        friendRequest.setUserReceiverId(userReceiverId);
+        return friendService.unFriend(friendRequest);
     }
 
     @GetMapping("/friendRequests")

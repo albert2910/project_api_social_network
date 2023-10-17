@@ -1,6 +1,6 @@
 package com.example.demospringsecurity.service;
 
-import com.example.demospringsecurity.dto.request.AddFriendRequest;
+import com.example.demospringsecurity.dto.request.FriendRequest;
 import com.example.demospringsecurity.model.Friend;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.FriendRepository;
@@ -29,15 +29,15 @@ public class FriendService {
     UserInfoRepository userInfoRepository;
 
     //  sent, unsent friend request
-    public FriendResponse addFriend(AddFriendRequest addFriendRequest) {
+    public FriendResponse addFriend(FriendRequest friendRequest) {
         FriendResponse addFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
-            addFriendRequest.setUserSenderId(currentUser.getUserId());
+            friendRequest.setUserSenderId(currentUser.getUserId());
         }
-        if (!userInfoRepository.existsUserInfoByUserId(addFriendRequest.getUserReceiverId())) {
+        if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
             addFriendResponse.setStatus("400");
             addFriendResponse.setMessage("Not found receiver!");
             addFriendResponse.setFriend(null);
@@ -46,22 +46,22 @@ public class FriendService {
         //  status = 0 unfriend
         //  status = 1 sending
         //  status = 2 accept
-        boolean checkFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderId(addFriendRequest.getUserReceiverId(),
-                addFriendRequest.getUserSenderId());
+        boolean checkFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
+                friendRequest.getUserSenderId());
 
-        boolean checkFriendRequest = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(addFriendRequest.getUserSenderId(),
-                addFriendRequest.getUserReceiverId(),
+        boolean checkFriendRequest = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
+                friendRequest.getUserReceiverId(),
                 1);
 //      nếu check đã có lời mời kết bạn từ bên kia thì thông báo là cần accept, không phải gửi lại lời mời kết bạn
         if (checkFriendRequest) {
             addFriendResponse.setStatus("400");
-            addFriendResponse.setMessage("User " + userInfoRepository.findByUserId(addFriendRequest.getUserReceiverId()).get().getUserName() + " sent a friend request to you! Please check list friend requests and accept!");
+            addFriendResponse.setMessage("User " + userInfoRepository.findByUserId(friendRequest.getUserReceiverId()).get().getUserName() + " sent a friend request to you! Please check list friend requests and accept!");
             addFriendResponse.setFriend(null);
             return addFriendResponse;
         }
         if (checkFriend) {
-            Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(addFriendRequest.getUserReceiverId(),
-                    addFriendRequest.getUserSenderId());
+            Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
+                    friendRequest.getUserSenderId());
             if (friend.getStatus() == 0) {
                 friend.setStatus(1);
                 friendRepository.save(friend);
@@ -86,8 +86,8 @@ public class FriendService {
             }
         } else {
             Friend friend = new Friend();
-            friend.setUserSenderId(addFriendRequest.getUserSenderId());
-            friend.setUserReceiverId(addFriendRequest.getUserReceiverId());
+            friend.setUserSenderId(friendRequest.getUserSenderId());
+            friend.setUserReceiverId(friendRequest.getUserReceiverId());
             friend.setStatus(1);
             friendRepository.save(friend);
             addFriendResponse.setStatus("200");
@@ -97,24 +97,30 @@ public class FriendService {
         return addFriendResponse;
     }
 
-    public FriendResponse acceptFriend(AddFriendRequest addFriendRequest) {
+    public FriendResponse acceptFriend(FriendRequest friendRequest) {
         FriendResponse acceptFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
-            addFriendRequest.setUserReceiverId(currentUser.getUserId());
+            friendRequest.setUserReceiverId(currentUser.getUserId());
         }
-        Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(addFriendRequest.getUserReceiverId(),
-                addFriendRequest.getUserSenderId(),
+        Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserReceiverId(),
+                friendRequest.getUserSenderId(),
                 1);
         if (friend != null) {
             friend.setStatus(2);
             friendRepository.save(friend);
             acceptFriendResponse.setStatus("200");
-            UserInfo userSender = userInfoRepository.findById(addFriendRequest.getUserSenderId()).get();
+            UserInfo userSender = userInfoRepository.findById(friendRequest.getUserSenderId()).get();
             acceptFriendResponse.setMessage("Accept friend " + userSender.getUserName() + "!");
             acceptFriendResponse.setFriend(friend);
+//          check TH nguoc lai, neu co ton tai => delete 
+            Friend friendCheck = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
+                    friendRequest.getUserReceiverId(), 0);
+            if(friendCheck != null) {
+                friendRepository.delete(friendCheck);
+            }
         } else {
             acceptFriendResponse.setStatus("400");
             acceptFriendResponse.setMessage("No invitation!");
@@ -171,6 +177,25 @@ public class FriendService {
             getListFriendResponse.setUserNameFriends(null);
         }
         return getListFriendResponse;
+    }
+
+    public FriendResponse unFriend(FriendRequest friendRequest) {
+        FriendResponse unFriendResponse = new FriendResponse();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
+            friendRequest.setUserSenderId(currentUser.getUserId());
+        }
+        Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
+                friendRequest.getUserSenderId());
+        if(friend.getStatus() == 0) {
+            unFriendResponse.setStatus("400");
+            unFriendResponse.setMessage("Are not friend! Can not unfriend!");
+            unFriendResponse.setFriend(friend);
+            return unFriendResponse;
+        }
+        return unFriendResponse;
     }
 
 

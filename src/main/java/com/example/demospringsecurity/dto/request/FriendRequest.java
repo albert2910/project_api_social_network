@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddFriendRequest {
+public class FriendRequest {
     private int id;
     private int userReceiverId;
     private int userSenderId;
