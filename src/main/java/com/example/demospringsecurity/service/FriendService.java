@@ -105,6 +105,12 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             friendRequest.setUserReceiverId(currentUser.getUserId());
         }
+        if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
+            acceptFriendResponse.setStatus("400");
+            acceptFriendResponse.setMessage("Not found sender!");
+            acceptFriendResponse.setFriend(null);
+            return acceptFriendResponse;
+        }
         Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserReceiverId(),
                 friendRequest.getUserSenderId(),
                 1);
@@ -115,10 +121,11 @@ public class FriendService {
             UserInfo userSender = userInfoRepository.findById(friendRequest.getUserSenderId()).get();
             acceptFriendResponse.setMessage("Accept friend " + userSender.getUserName() + "!");
             acceptFriendResponse.setFriend(friend);
-//          check TH nguoc lai, neu co ton tai => delete 
+//          check TH nguoc lai, neu co ton tai => delete
             Friend friendCheck = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
-                    friendRequest.getUserReceiverId(), 0);
-            if(friendCheck != null) {
+                    friendRequest.getUserReceiverId(),
+                    0);
+            if (friendCheck != null) {
                 friendRepository.delete(friendCheck);
             }
         } else {
@@ -187,11 +194,43 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             friendRequest.setUserSenderId(currentUser.getUserId());
         }
+        if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
+            unFriendResponse.setStatus("400");
+            unFriendResponse.setMessage("Not found your friend!");
+            unFriendResponse.setFriend(null);
+            return unFriendResponse;
+        }
         Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
                 friendRequest.getUserSenderId());
-        if(friend.getStatus() == 0) {
+        if (friend == null) {
+            friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserSenderId(),
+                    friendRequest.getUserReceiverId());
+            if(friend == null) {
+                unFriendResponse.setStatus("400");
+                unFriendResponse.setMessage("Are not friend! Can not unfriend!");
+                unFriendResponse.setFriend(null);
+                return unFriendResponse;
+            }
+        }
+//      cả hai chưa là bạn
+        if (friend.getStatus() == 0) {
             unFriendResponse.setStatus("400");
             unFriendResponse.setMessage("Are not friend! Can not unfriend!");
+            unFriendResponse.setFriend(null);
+            return unFriendResponse;
+        }
+//      đang gửi lời mời kết bạn
+        if (friend.getStatus() == 1) {
+            unFriendResponse.setStatus("400");
+            unFriendResponse.setMessage("Are not friend! Can not unfriend! You can check list friend requests and decline!");
+            unFriendResponse.setFriend(null);
+            return unFriendResponse;
+        }
+//      cả hai đã là bạn
+        if (friend.getStatus() == 2) {
+            friend.setStatus(0);
+            unFriendResponse.setStatus("200");
+            unFriendResponse.setMessage("Unfriend is successful! You must have had difficulty making a decision..");
             unFriendResponse.setFriend(friend);
             return unFriendResponse;
         }
