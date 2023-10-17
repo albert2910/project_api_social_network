@@ -6,9 +6,7 @@ import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.mapperImpl.PostMapper;
 import com.example.demospringsecurity.model.*;
 import com.example.demospringsecurity.repository.*;
-import com.example.demospringsecurity.response.GetAllPostResponse;
-import com.example.demospringsecurity.response.LikeResponse;
-import com.example.demospringsecurity.response.UpPostResponse;
+import com.example.demospringsecurity.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,6 +39,9 @@ public class PostService {
 
     @Autowired
     LikeRepository likeRepository;
+
+    @Autowired
+    FriendService friendService;
 
 
     public UpPostResponse upPost(UpPostRequest upPostRequest) {
@@ -185,6 +186,43 @@ public class PostService {
             likeRepository.save(like);
         }
         return likeResponse;
+    }
+
+    public GetNewFeedResponse getNewFeed() {
+        GetNewFeedResponse getNewFeedResponse = new GetNewFeedResponse();
+        GetListFriendResponse getListFriendResponse = friendService.getListFriends();
+        List<String> userNameFriends = getListFriendResponse.getUserNameFriends();
+        List<PostDto> posts = new ArrayList<>();
+        for (String userNameFriend : userNameFriends) {
+            UserInfo userInfo = userInfoRepository.findByUserName(userNameFriend).get();
+            List<PostDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
+            posts.addAll(postsByIdUser);
+        }
+        getNewFeedResponse.setStatus("200");
+        getNewFeedResponse.setMessage("Get new feed successful!");
+        getNewFeedResponse.setPostDtos(posts);
+        System.out.println(posts.size());
+        return getNewFeedResponse;
+    }
+
+    public List<PostDto> getAllPostsByUserId(int userId) {
+        List<UserPost> userPostList = userPostRepository.findUserPostByPostUserId(userId);
+        List<PostDto> postDtos = new ArrayList<>();
+        for (UserPost userPost : userPostList) {
+            PostDto postDto = postMapper.toDto(userPost);
+            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
+                    0);
+            List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+            if (!imageList.isEmpty()) {
+                postDto.setPostImages(imageList);
+            }
+            if (!commentList.isEmpty()) {
+                postDto.setPostComments(commentList);
+            }
+            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
+            postDtos.add(postDto);
+        }
+        return postDtos;
     }
 
 }

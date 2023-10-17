@@ -3,10 +3,7 @@ package com.example.demospringsecurity.controller;
 import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.model.Image;
-import com.example.demospringsecurity.response.FileUploadResponse;
-import com.example.demospringsecurity.response.GetAllPostResponse;
-import com.example.demospringsecurity.response.LikeResponse;
-import com.example.demospringsecurity.response.UpPostResponse;
+import com.example.demospringsecurity.response.*;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +68,11 @@ public class PostController {
         likeRequest.setPostId(postId);
         return new ResponseEntity<>(postService.likePost(likeRequest),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/new-feed")
+    public GetNewFeedResponse getNewFeed() {
+        return postService.getNewFeed();
     }
 
 
