@@ -16,4 +16,6 @@ public interface UserInfoRepository extends CrudRepository<UserInfo, Integer> {
     boolean existsUserInfoByUserEmail(String userEmail);
 
     boolean existsUserInfosByUserName(String userName);
+
+    boolean existsUserInfoByUserId(int id);
 }

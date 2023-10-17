@@ -28,7 +28,7 @@ public class FriendService {
     @Autowired
     UserInfoRepository userInfoRepository;
 
-//  sent, unsent friend request
+    //  sent, unsent friend request
     public FriendResponse addFriend(AddFriendRequest addFriendRequest) {
         FriendResponse addFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -37,6 +37,12 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             addFriendRequest.setUserSenderId(currentUser.getUserId());
         }
+        if (!userInfoRepository.existsUserInfoByUserId(addFriendRequest.getUserReceiverId())) {
+            addFriendResponse.setStatus("400");
+            addFriendResponse.setMessage("Not found receiver!");
+            addFriendResponse.setFriend(null);
+            return addFriendResponse;
+        }
         //  status = 0 unfriend
         //  status = 1 sending
         //  status = 2 accept
@@ -44,11 +50,12 @@ public class FriendService {
                 addFriendRequest.getUserSenderId());
 
         boolean checkFriendRequest = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(addFriendRequest.getUserSenderId(),
-                addFriendRequest.getUserReceiverId(), 1);
+                addFriendRequest.getUserReceiverId(),
+                1);
 //      nếu check đã có lời mời kết bạn từ bên kia thì thông báo là cần accept, không phải gửi lại lời mời kết bạn
         if (checkFriendRequest) {
             addFriendResponse.setStatus("400");
-            addFriendResponse.setMessage("User "+ userInfoRepository.findByUserId(addFriendRequest.getUserReceiverId()).get().getUserName() +" sent a friend request to you! Please check list friend requests and accept!");
+            addFriendResponse.setMessage("User " + userInfoRepository.findByUserId(addFriendRequest.getUserReceiverId()).get().getUserName() + " sent a friend request to you! Please check list friend requests and accept!");
             addFriendResponse.setFriend(null);
             return addFriendResponse;
         }
@@ -68,6 +75,12 @@ public class FriendService {
                 friendRepository.save(friend);
                 addFriendResponse.setStatus("200");
                 addFriendResponse.setMessage("Unsent a friend request!");
+                addFriendResponse.setFriend(friend);
+                return addFriendResponse;
+            }
+            if (friend.getStatus() == 2) {
+                addFriendResponse.setStatus("400");
+                addFriendResponse.setMessage("Already friends!");
                 addFriendResponse.setFriend(friend);
                 return addFriendResponse;
             }
