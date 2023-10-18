@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -198,6 +196,7 @@ public class PostService {
             List<PostDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
             posts.addAll(postsByIdUser);
         }
+        Collections.sort(posts, Comparator.comparing(PostDto::getPostCreateDate).reversed());
         getNewFeedResponse.setStatus("200");
         getNewFeedResponse.setMessage("Get new feed successful!");
         getNewFeedResponse.setPostDtos(posts);
@@ -222,6 +221,7 @@ public class PostService {
             postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
             postDtos.add(postDto);
         }
+
         return postDtos;
     }
 
