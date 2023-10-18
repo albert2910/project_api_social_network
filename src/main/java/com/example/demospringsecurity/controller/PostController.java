@@ -47,14 +47,16 @@ public class PostController {
     @PutMapping(value = "/edit-post/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UpPostResponse editPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
         upPostRequest.setPostId(postId);
-        List<String> listImages = new ArrayList<>();
         if (multipartFiles != null) {
+            List<String> listImages = new ArrayList<>();
             for (MultipartFile multipartFile : multipartFiles) {
                 FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
                 listImages.add(fileUploadResponse.getFileName());
             }
+            upPostRequest.setPostUrlImages(listImages);
+        } else {
+            upPostRequest.setPostUrlImages(null);
         }
-        upPostRequest.setPostUrlImages(listImages);
         return postService.upPost(upPostRequest);
     }
 

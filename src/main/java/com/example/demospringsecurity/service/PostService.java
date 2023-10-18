@@ -85,30 +85,40 @@ public class PostService {
         if (userPost.isPresent()) {
             Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.get().getPostUserId());
             if (userInfo.get().getUserId() == upPostRequest.getPostUserId()) {
+                List<String> imagesEdit = upPostRequest.getPostUrlImages();
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
                         0);
-                if (!imageList.isEmpty()) {
-                    for (Image image : imageList) {
-                        System.out.println(image.getImageUrl());
-                        image.setImageFlagDelete(1);
-                        imageRepository.save(image);
-                    }
-                }
-                List<String> imagesEdit = upPostRequest.getPostUrlImages();
                 List<Image> imagesEdited = new ArrayList<>();
-                if (!imagesEdit.isEmpty()) {
-                    for (String s : imagesEdit) {
-                        Image image = new Image();
-                        image.setImageUrl(s);
-                        image.setImagePostId(upPostRequest.getPostId());
-                        image.setImageFlagDelete(0);
-                        Image imageSaved = imageRepository.save(image);
-                        imagesEdited.add(imageSaved);
+                if (imagesEdit != null) {
+                    if (!imageList.isEmpty()) {
+                        for (Image image : imageList) {
+                            System.out.println(image.getImageUrl());
+                            image.setImageFlagDelete(1);
+                            imageRepository.save(image);
+                        }
                     }
+                    if (!imagesEdit.isEmpty()) {
+                        for (String s : imagesEdit) {
+                            Image image = new Image();
+                            image.setImageUrl(s);
+                            image.setImagePostId(upPostRequest.getPostId());
+                            image.setImageFlagDelete(0);
+                            Image imageSaved = imageRepository.save(image);
+                            imagesEdited.add(imageSaved);
+                        }
+                    }
+                } else {
+                    imagesEdited = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
+                            0);
                 }
                 UserPost userPost1 = postMapper.toEntity(upPostRequest);
                 UserPost userPostEdited = userPostRepository.save(userPost1);
                 PostDto postDto = postMapper.toDto(userPostEdited);
+                List<Comment> commentList = commentRepository.findCommentByCommentPostId(postDto.getPostId());
+                postDto.setPostComments(commentList);
+                int likePost = likeRepository.countLikeByLikePostIdAndLikeFlag(postDto.getPostId(),
+                        1);
+                postDto.setLike(likePost);
                 postDto.setPostImages(imagesEdited);
                 upPostResponse.setPostDto(postDto);
                 upPostResponse.setMessage("Edit this post successfully!");
@@ -118,7 +128,6 @@ public class PostService {
                 upPostResponse.setMessage("You cannot edit this post!");
                 upPostResponse.setStatus("400");
             }
-
         }
         return upPostResponse;
     }
@@ -140,7 +149,8 @@ public class PostService {
             if (!commentList.isEmpty()) {
                 postDto.setPostComments(commentList);
             }
-            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
+            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                    1));
             postDtos.add(postDto);
         }
         getAllPostResponse.setPosts(postDtos);
@@ -180,6 +190,7 @@ public class PostService {
             like.setLikeUserId(likeRequest.getUserId());
             like.setLikeFlag(1);
             likeResponse.setMessage("Liked!");
+            likeResponse.setStatus("200");
             likeResponse.setLiked(true);
             likeRepository.save(like);
         }
@@ -199,7 +210,8 @@ public class PostService {
         }
         List<PostDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName()).get().getUserId());
         posts.addAll(myPosts);
-        Collections.sort(posts, Comparator.comparing(PostDto::getPostCreateDate).reversed());
+        Collections.sort(posts,
+                Comparator.comparing(PostDto::getPostCreateDate).reversed());
         getNewFeedResponse.setStatus("200");
         getNewFeedResponse.setMessage("Get new feed successful!");
         getNewFeedResponse.setPostDtos(posts);
@@ -221,7 +233,8 @@ public class PostService {
             if (!commentList.isEmpty()) {
                 postDto.setPostComments(commentList);
             }
-            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
+            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                    1));
             postDtos.add(postDto);
         }
         return postDtos;
