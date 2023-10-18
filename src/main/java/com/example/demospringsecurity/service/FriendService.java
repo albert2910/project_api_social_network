@@ -160,6 +160,7 @@ public class FriendService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
+            getListFriendResponse.setCurrentUserName(currentUserName);
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             List<Friend> friends = friendRepository.findListFriendByCurrentUserId(currentUser.getUserId());
             List<String> userNameFriends = new ArrayList<>();

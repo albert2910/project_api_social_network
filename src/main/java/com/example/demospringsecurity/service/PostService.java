@@ -187,6 +187,7 @@ public class PostService {
     }
 
     public GetNewFeedResponse getNewFeed() {
+//      hiển thị các bài viết của bản thân và bạn bè ắp xếp theo thời gian đăng gần nhất
         GetNewFeedResponse getNewFeedResponse = new GetNewFeedResponse();
         GetListFriendResponse getListFriendResponse = friendService.getListFriends();
         List<String> userNameFriends = getListFriendResponse.getUserNameFriends();
@@ -196,6 +197,8 @@ public class PostService {
             List<PostDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
             posts.addAll(postsByIdUser);
         }
+        List<PostDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName()).get().getUserId());
+        posts.addAll(myPosts);
         Collections.sort(posts, Comparator.comparing(PostDto::getPostCreateDate).reversed());
         getNewFeedResponse.setStatus("200");
         getNewFeedResponse.setMessage("Get new feed successful!");
@@ -221,7 +224,6 @@ public class PostService {
             postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(), 1));
             postDtos.add(postDto);
         }
-
         return postDtos;
     }
 
