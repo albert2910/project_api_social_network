@@ -1,15 +1,20 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.dto.ReportUserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
 import com.example.demospringsecurity.mapperImpl.UserChangeInfoMapper;
 import com.example.demospringsecurity.mapperImpl.UserMapper;
+import com.example.demospringsecurity.model.ExcelGenerator;
 import com.example.demospringsecurity.model.PasswordResetToken;
 import com.example.demospringsecurity.model.UserInfo;
-import com.example.demospringsecurity.repository.PasswordResetTokenRepository;
-import com.example.demospringsecurity.repository.UserInfoRepository;
-import com.example.demospringsecurity.response.*;
+import com.example.demospringsecurity.repository.*;
+import com.example.demospringsecurity.response.ChangeInfoUserResponse;
+import com.example.demospringsecurity.response.PasswordChangeResponse;
+import com.example.demospringsecurity.response.PasswordResetTokenResponse;
+import com.example.demospringsecurity.response.RegisterResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,8 +23,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +37,15 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     UserInfoRepository userInfoRepository;
+
+    @Autowired
+    UserPostRepository userPostRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
+    LikeRepository likeRepository;
 
     @Autowired
     UserMapper userMapper;
@@ -183,13 +201,13 @@ public class UserService {
             if (changeInfoUserRequest.getUserAvatar() == null || changeInfoUserRequest.getUserAvatar().isEmpty()) {
                 userInfoUpdate.setUserAvatar(userInfo.get().getUserAvatar());
             }
-            if(changeInfoUserRequest.getUserEmail() == null || changeInfoUserRequest.getUserEmail().isEmpty()) {
+            if (changeInfoUserRequest.getUserEmail() == null || changeInfoUserRequest.getUserEmail().isEmpty()) {
                 userInfoUpdate.setUserEmail(userInfo.get().getUserEmail());
             }
-            if(changeInfoUserRequest.getUserBirthDate() == null) {
+            if (changeInfoUserRequest.getUserBirthDate() == null) {
                 userInfoUpdate.setUserBirthDate(userInfo.get().getUserBirthDate());
             }
-            if(changeInfoUserRequest.getUserAddress() == null || changeInfoUserRequest.getUserAddress().isEmpty()) {
+            if (changeInfoUserRequest.getUserAddress() == null || changeInfoUserRequest.getUserAddress().isEmpty()) {
                 userInfoUpdate.setUserAddress(userInfo.get().getUserAddress());
             }
             userInfoUpdate.setUserPassword(userInfo.get().getUserPassword());
@@ -204,7 +222,52 @@ public class UserService {
         }
         return changeInfoUserResponse;
     }
+
     public UserInfo findUserById(int id) {
         return userInfoRepository.findByUserId(id).get();
     }
+
+    //  export file exel bao cao 1 tuan cua user dang nhap
+    public void exportReport(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=userActive" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey,
+                headerValue);
+
+        ReportUserDto reportUserDto = synthesizeReport();
+        ExcelGenerator generator = new ExcelGenerator(reportUserDto);
+        generator.generateExcelFile(response);
+    }
+
+    //   tổng hợp báo cáo 1 tuần của user đăng nhập
+    public ReportUserDto synthesizeReport() {
+        ReportUserDto reportUserDto = new ReportUserDto();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            reportUserDto.setUserName(currentUserName);
+//            lay ra so bai viet user dang nhap da tao trong vong 1 tuan
+            LocalDateTime currentDate = LocalDateTime.now();
+            int countPostsLastWeek = userPostRepository.countPostLastWeek(userInfo.getUserId(),
+                    currentDate);
+            reportUserDto.setPostsLastWeek(countPostsLastWeek);
+//            lay ra so comment user dang nhap da comment trong vong 1 tuan
+            int countCommentsLastWeek = commentRepository.countCommentsLastWeekByMe(userInfo.getUserId(),
+                    currentDate);
+            reportUserDto.setNewCommentsLastWeek(countCommentsLastWeek);
+//            lay ra danh sach ban be user da ket ban trong vong 1 tuan
+            reportUserDto.setNewFriendLastWeek(1);
+//            lay ra so like user dang nhap da like trong vong 1 tuan
+            int countLikesLastWeek = likeRepository.countLikesLastWeekByMe(userInfo.getUserId(), currentDate);
+            reportUserDto.setNewLikesLastWeek(countLikesLastWeek);
+
+        }
+        return reportUserDto;
+    }
+
 }

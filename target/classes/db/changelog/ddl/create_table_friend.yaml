@@ -28,3 +28,13 @@ databaseChangeLog:
               - column:
                   name: status
                   type: int
+  - changeSet:
+      id: 14
+      author: admin
+      changes:
+        - addColumn:
+            tableName: TBFriend
+            columns:
+              - column:
+                  name: friend_time_create
+                  type: datetime

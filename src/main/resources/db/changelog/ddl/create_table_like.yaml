@@ -28,3 +28,13 @@ databaseChangeLog:
               - column:
                   name: like_flag
                   type: int
+  - changeSet:
+      id: 15
+      author: admin
+      changes:
+        - addColumn:
+            tableName: TBPost_like
+            columns:
+              - column:
+                  name: like_time_create
+                  type: datetime

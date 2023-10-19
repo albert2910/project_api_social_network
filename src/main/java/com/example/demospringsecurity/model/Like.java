@@ -29,4 +29,7 @@ public class Like {
 //    likeflag = 1 => like
     @Column(name = "like_flag")
     private int likeFlag;
+
+    @Column(name = "like_time_create")
+    private int likeCreateDate;
 }

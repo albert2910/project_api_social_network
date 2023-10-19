@@ -8,10 +8,9 @@ import com.example.demospringsecurity.service.JwtService;
 import com.example.demospringsecurity.service.OtpService;
 import com.example.demospringsecurity.service.UserService;
 import com.example.demospringsecurity.util.FileDownloadUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api")
@@ -119,7 +114,8 @@ public class UserController {
         }
 
         if (resource == null) {
-            return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("File not found",
+                    HttpStatus.NOT_FOUND);
         }
 //        String contentType = "application/octet-stream";
         String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
@@ -128,6 +124,11 @@ public class UserController {
                 .contentType(MediaType.IMAGE_JPEG)
 //                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource);
+    }
+
+    @GetMapping("/export-to-excel")
+    public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
+        userService.exportReport(response);
     }
 
 }
