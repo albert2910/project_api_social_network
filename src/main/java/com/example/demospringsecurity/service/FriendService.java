@@ -53,10 +53,20 @@ public class FriendService {
         boolean checkFriendRequest = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
                 friendRequest.getUserReceiverId(),
                 1);
+        boolean checkAlreadyFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
+                friendRequest.getUserReceiverId(),
+                2);
 //      nếu check đã có lời mời kết bạn từ bên kia thì thông báo là cần accept, không phải gửi lại lời mời kết bạn
         if (checkFriendRequest) {
             addFriendResponse.setStatus("400");
             addFriendResponse.setMessage("User " + userInfoRepository.findByUserId(friendRequest.getUserReceiverId()).get().getUserName() + " sent a friend request to you! Please check list friend requests and accept!");
+            addFriendResponse.setFriend(null);
+            return addFriendResponse;
+        }
+//       nếu check đã la bạn từ bên kia thì thông báo là da la ban, không phải gửi lại lời mời kết bạn
+        if (checkAlreadyFriend) {
+            addFriendResponse.setStatus("400");
+            addFriendResponse.setMessage("User " + userInfoRepository.findByUserId(friendRequest.getUserReceiverId()).get().getUserName() + " and you already friend!");
             addFriendResponse.setFriend(null);
             return addFriendResponse;
         }
