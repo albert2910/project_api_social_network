@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Integer> {
@@ -16,7 +17,8 @@ public interface LikeRepository extends JpaRepository<Like, Integer> {
 
     int countLikeByLikePostIdAndLikeFlag(int postId, int likeFlag);
 
-
     @Query(nativeQuery = true, value = "select count(TBPost_like.like_id) as numberCommentLastWeek from social_network.TBPost_like where TBPost_like.like_user_id = :userId and  (SELECT DATEDIFF(:current_date, TBPost_like.like_time_create) <= 7);")
     int countLikesLastWeekByMe(@Param("userId") int userId, @Param("current_date") LocalDateTime localDateTime);
+
+    List<Like> findLikeByLikePostId(int postId);
 }

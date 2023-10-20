@@ -240,4 +240,18 @@ public class PostService {
         return postDtos;
     }
 
+    //    lay ra danh sach nguoi like bai post
+    public UserLikePostResponse getUserLikePost(int postId) {
+        UserLikePostResponse userLikePostResponse = new UserLikePostResponse();
+        List<Like> listLikeByPost = likeRepository.findLikeByLikePostId(postId);
+        List<String> listUsernameLikePost = new ArrayList<>();
+        for (Like like : listLikeByPost) {
+            listUsernameLikePost.add(userInfoRepository.findById(like.getLikeUserId()).get().getUserName());
+        }
+        userLikePostResponse.setStatus("200");
+        userLikePostResponse.setMessage("Get list userName like post successfully!");
+        userLikePostResponse.setUserNamesLikePost(listUsernameLikePost);
+        return userLikePostResponse;
+    }
+
 }

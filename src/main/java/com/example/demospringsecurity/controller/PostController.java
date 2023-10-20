@@ -72,6 +72,11 @@ public class PostController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/post/users-liked/{postId}")
+    public UserLikePostResponse getListUserNameLikePost(@PathVariable int postId) {
+        return postService.getUserLikePost(postId);
+    }
+
     @GetMapping("/new-feed")
     public GetNewFeedResponse getNewFeed() {
         return postService.getNewFeed();

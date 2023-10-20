@@ -31,5 +31,5 @@ public class Like {
     private int likeFlag;
 
     @Column(name = "like_time_create")
-    private int likeCreateDate;
+    private LocalDateTime likeCreateDate;
 }

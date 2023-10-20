@@ -7,13 +7,11 @@ import com.example.demospringsecurity.dto.request.RegisterRequest;
 import com.example.demospringsecurity.mapperImpl.UserChangeInfoMapper;
 import com.example.demospringsecurity.mapperImpl.UserMapper;
 import com.example.demospringsecurity.model.ExcelGenerator;
+import com.example.demospringsecurity.model.Like;
 import com.example.demospringsecurity.model.PasswordResetToken;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.*;
-import com.example.demospringsecurity.response.ChangeInfoUserResponse;
-import com.example.demospringsecurity.response.PasswordChangeResponse;
-import com.example.demospringsecurity.response.PasswordResetTokenResponse;
-import com.example.demospringsecurity.response.RegisterResponse;
+import com.example.demospringsecurity.response.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -28,9 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -116,9 +112,7 @@ public class UserService {
             LocalDateTime dateResetToken = java.time.LocalDateTime.now();
             passwordResetTokenAdd.setPasswordResetToken_datetime(dateResetToken);
             passwordResetTokenAdd.setUserId(userInfo.get().getUserId());
-            if (passwordResetToken.isPresent()) {
-                passwordResetTokenAdd.setPasswordResetTokenId(passwordResetToken.get().getPasswordResetTokenId());
-            }
+            passwordResetToken.ifPresent(resetToken -> passwordResetTokenAdd.setPasswordResetTokenId(resetToken.getPasswordResetTokenId()));
             passwordResetTokenRepository.save(passwordResetTokenAdd);
             passwordResetTokenResponse.setStatus("200");
             passwordResetTokenResponse.setResetToken(tokenReset);
@@ -269,7 +263,6 @@ public class UserService {
 //            lay ra so like user dang nhap da like trong vong 1 tuan
             int countLikesLastWeek = likeRepository.countLikesLastWeekByMe(userInfo.getUserId(), currentDate);
             reportUserDto.setNewLikesLastWeek(countLikesLastWeek);
-
         }
         return reportUserDto;
     }
