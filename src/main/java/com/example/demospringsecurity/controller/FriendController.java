@@ -15,21 +15,18 @@ public class FriendController {
     FriendService friendService;
 
     @PostMapping("/add-friend/{userReceiverId}")
-    public FriendResponse addFriend(@PathVariable int userReceiverId, @RequestBody FriendRequest friendRequest) {
-        friendRequest.setUserReceiverId(userReceiverId);
-        return friendService.addFriend(friendRequest);
+    public FriendResponse addFriend(@PathVariable int userReceiverId) {
+        return friendService.addFriend(userReceiverId);
     }
 
     @PostMapping("/accept-friend/{userSenderId}")
-    public FriendResponse acceptFriend(@PathVariable int userSenderId, @RequestBody FriendRequest friendRequest) {
-        friendRequest.setUserSenderId(userSenderId);
-        return friendService.acceptFriend(friendRequest);
+    public FriendResponse acceptFriend(@PathVariable int userSenderId) {
+        return friendService.acceptFriend(userSenderId);
     }
 
     @PostMapping("/unfriend/{userReceiverId}")
-    public FriendResponse unFriend(@PathVariable int userReceiverId, @RequestBody FriendRequest friendRequest) {
-        friendRequest.setUserReceiverId(userReceiverId);
-        return friendService.unFriend(friendRequest);
+    public FriendResponse unFriend(@PathVariable int userReceiverId) {
+        return friendService.unFriend(userReceiverId);
     }
 
     @GetMapping("/friendRequests")

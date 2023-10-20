@@ -45,6 +45,9 @@ public class UserService {
     CommentRepository commentRepository;
 
     @Autowired
+    FriendRepository friendRepository;
+
+    @Autowired
     LikeRepository likeRepository;
 
     @Autowired
@@ -261,7 +264,8 @@ public class UserService {
                     currentDate);
             reportUserDto.setNewCommentsLastWeek(countCommentsLastWeek);
 //            lay ra danh sach ban be user da ket ban trong vong 1 tuan
-            reportUserDto.setNewFriendLastWeek(1);
+            int countNewFriendsLastWeek = friendRepository.countNewFriendsLastWeek(userInfo.getUserId(), currentDate);
+            reportUserDto.setNewFriendLastWeek(countNewFriendsLastWeek);
 //            lay ra so like user dang nhap da like trong vong 1 tuan
             int countLikesLastWeek = likeRepository.countLikesLastWeekByMe(userInfo.getUserId(), currentDate);
             reportUserDto.setNewLikesLastWeek(countLikesLastWeek);

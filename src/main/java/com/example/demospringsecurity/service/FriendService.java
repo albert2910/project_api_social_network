@@ -30,7 +30,9 @@ public class FriendService {
     UserInfoRepository userInfoRepository;
 
     //  sent, unsent friend request
-    public FriendResponse addFriend(FriendRequest friendRequest) {
+    public FriendResponse addFriend(int userReceiverId) {
+        FriendRequest friendRequest = new FriendRequest();
+        friendRequest.setUserReceiverId(userReceiverId);
         FriendResponse addFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -38,9 +40,17 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             friendRequest.setUserSenderId(currentUser.getUserId());
         }
+//      gui loi moi ket ban den user ko ton tai
         if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
             addFriendResponse.setStatus("400");
             addFriendResponse.setMessage("Not found receiver!");
+            addFriendResponse.setFriend(null);
+            return addFriendResponse;
+        }
+//        gui loi moi ket ban cho chinh minh
+        if (friendRequest.getUserReceiverId() == friendRequest.getUserSenderId()) {
+            addFriendResponse.setStatus("400");
+            addFriendResponse.setMessage("You can not send friend request to yourself!");
             addFriendResponse.setFriend(null);
             return addFriendResponse;
         }
@@ -49,13 +59,16 @@ public class FriendService {
         //  status = 2 accept
         boolean checkFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
                 friendRequest.getUserSenderId());
-
+        boolean checkNoFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
+                friendRequest.getUserReceiverId(),
+                0);
         boolean checkFriendRequest = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
                 friendRequest.getUserReceiverId(),
                 1);
         boolean checkAlreadyFriend = friendRepository.existsFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserSenderId(),
                 friendRequest.getUserReceiverId(),
                 2);
+
 //      nếu check đã có lời mời kết bạn từ bên kia thì thông báo là cần accept, không phải gửi lại lời mời kết bạn
         if (checkFriendRequest) {
             addFriendResponse.setStatus("400");
@@ -75,6 +88,8 @@ public class FriendService {
                     friendRequest.getUserSenderId());
             if (friend.getStatus() == 0) {
                 friend.setStatus(1);
+                LocalDateTime currentDate = LocalDateTime.now();
+                friend.setFriendCreateDate(currentDate);
                 friendRepository.save(friend);
                 addFriendResponse.setStatus("200");
                 addFriendResponse.setMessage("Sent a friend request!");
@@ -83,6 +98,8 @@ public class FriendService {
             }
             if (friend.getStatus() == 1) {
                 friend.setStatus(0);
+                LocalDateTime currentDate = LocalDateTime.now();
+                friend.setFriendCreateDate(currentDate);
                 friendRepository.save(friend);
                 addFriendResponse.setStatus("200");
                 addFriendResponse.setMessage("Unsent a friend request!");
@@ -95,11 +112,26 @@ public class FriendService {
                 addFriendResponse.setFriend(friend);
                 return addFriendResponse;
             }
+        } else if (checkNoFriend) {
+            Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserSenderId(),
+                    friendRequest.getUserReceiverId());
+            friend.setUserReceiverId(friendRequest.getUserReceiverId());
+            friend.setUserSenderId(friendRequest.getUserSenderId());
+            friend.setStatus(1);
+            LocalDateTime currentDate = LocalDateTime.now();
+            friend.setFriendCreateDate(currentDate);
+            friendRepository.save(friend);
+            addFriendResponse.setStatus("200");
+            addFriendResponse.setMessage("Sent a friend request!");
+            addFriendResponse.setFriend(friend);
+            return addFriendResponse;
         } else {
             Friend friend = new Friend();
             friend.setUserSenderId(friendRequest.getUserSenderId());
             friend.setUserReceiverId(friendRequest.getUserReceiverId());
             friend.setStatus(1);
+            LocalDateTime currentDate = LocalDateTime.now();
+            friend.setFriendCreateDate(currentDate);
             friendRepository.save(friend);
             addFriendResponse.setStatus("200");
             addFriendResponse.setMessage("Sent a friend request!");
@@ -108,7 +140,9 @@ public class FriendService {
         return addFriendResponse;
     }
 
-    public FriendResponse acceptFriend(FriendRequest friendRequest) {
+    public FriendResponse acceptFriend(int userSenderId) {
+        FriendRequest friendRequest = new FriendRequest();
+        friendRequest.setUserSenderId(userSenderId);
         FriendResponse acceptFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -116,9 +150,17 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             friendRequest.setUserReceiverId(currentUser.getUserId());
         }
-        if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
+//      accept 1 user ko ton tai
+        if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserSenderId())) {
             acceptFriendResponse.setStatus("400");
             acceptFriendResponse.setMessage("Not found sender!");
+            acceptFriendResponse.setFriend(null);
+            return acceptFriendResponse;
+        }
+//      accept chinh ban than minh
+        if (friendRequest.getUserSenderId() == friendRequest.getUserReceiverId()) {
+            acceptFriendResponse.setStatus("400");
+            acceptFriendResponse.setMessage("You can not accept yourself!");
             acceptFriendResponse.setFriend(null);
             return acceptFriendResponse;
         }
@@ -200,7 +242,9 @@ public class FriendService {
         return getListFriendResponse;
     }
 
-    public FriendResponse unFriend(FriendRequest friendRequest) {
+    public FriendResponse unFriend(int userReceiverId) {
+        FriendRequest friendRequest = new FriendRequest();
+        friendRequest.setUserReceiverId(userReceiverId);
         FriendResponse unFriendResponse = new FriendResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -208,9 +252,17 @@ public class FriendService {
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
             friendRequest.setUserSenderId(currentUser.getUserId());
         }
+//        unfriend 1 user ko ton tai
         if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
             unFriendResponse.setStatus("400");
-            unFriendResponse.setMessage("Not found your friend!");
+            unFriendResponse.setMessage("Not found user!");
+            unFriendResponse.setFriend(null);
+            return unFriendResponse;
+        }
+//        unfriend ban than minh
+        if(userReceiverId == friendRequest.getUserSenderId()) {
+            unFriendResponse.setStatus("400");
+            unFriendResponse.setMessage("You can not unfriend yourself!");
             unFriendResponse.setFriend(null);
             return unFriendResponse;
         }
@@ -219,7 +271,7 @@ public class FriendService {
         if (friend == null) {
             friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserSenderId(),
                     friendRequest.getUserReceiverId());
-            if(friend == null) {
+            if (friend == null) {
                 unFriendResponse.setStatus("400");
                 unFriendResponse.setMessage("Are not friend! Can not unfriend!");
                 unFriendResponse.setFriend(null);
