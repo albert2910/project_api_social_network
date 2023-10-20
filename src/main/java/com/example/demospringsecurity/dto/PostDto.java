@@ -22,12 +22,4 @@ public class PostDto {
     private LocalDateTime postCreateDate;
 
 }
-//class PostComparator implements java.util.Comparator<PostDto> {
-//    @Override
-//    public int compare(PostDto a, PostDto b) {
-//        long millisA = localDateTime
-//                .atZone(ZoneId.systemDefault())
-//                .toInstant().toEpochMilli();
-//        return a.getPostCreateDate() - b.getPostCreateDate();
-//    }
-//}
+

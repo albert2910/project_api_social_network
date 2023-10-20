@@ -132,6 +132,12 @@ public class PostService {
         return upPostResponse;
     }
 
+    public DeletePostResponse deletePost(int idPost) {
+        DeletePostResponse deletePostResponse = new DeletePostResponse();
+
+        return deletePostResponse;
+    }
+
     public GetAllPostResponse getAllPosts() {
         GetAllPostResponse getAllPostResponse = new GetAllPostResponse();
         getAllPostResponse.setStatus("200");
