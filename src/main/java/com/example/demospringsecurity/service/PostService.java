@@ -139,6 +139,45 @@ public class PostService {
         return upPostResponse;
     }
 
+    public PostResponse findPostById(int postId) {
+        PostResponse postResponse = new PostResponse();
+//        check friend
+        String currentUserName = friendService.getListFriends().getCurrentUserName();
+        List<String> listUserNameCanSeePost = friendService.getListFriends().getUserNameFriends();
+        listUserNameCanSeePost.add(currentUserName);
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
+                0);
+        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId()).get();
+        if(!listUserNameCanSeePost.contains(userPostedThePost.getUserName())) {
+            postResponse.setMessage("You can not see the post because you and "+ userPostedThePost.getUserName() +" are not friend!");
+            postResponse.setStatus("400");
+            return postResponse;
+        }
+//        check post ton tai hay ko
+        if (userPost != null) {
+            PostDto postDto = postMapper.toDto(userPost);
+            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
+                    0);
+            List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+            if (!imageList.isEmpty()) {
+                postDto.setPostImages(imageList);
+            }
+            if (!commentList.isEmpty()) {
+                postDto.setPostComments(commentList);
+            }
+            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                    1));
+            postResponse.setMessage("This is post!");
+            postResponse.setStatus("200");
+            postResponse.setPostDto(postDto);
+
+        } else {
+            postResponse.setMessage("Not found this post!");
+            postResponse.setStatus("400");
+        }
+        return postResponse;
+    }
+
     public DeletePostResponse deletePost(int idPost) {
         DeletePostResponse deletePostResponse = new DeletePostResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -200,8 +239,9 @@ public class PostService {
         LikeRequest likeRequest = new LikeRequest();
         LikeResponse likeResponse = new LikeResponse();
         likeRequest.setPostId(postId);
-        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,0);
-        if(userPost == null) {
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
+                0);
+        if (userPost == null) {
             likeResponse.setMessage("Not found this post!");
             likeResponse.setStatus("400");
             return likeResponse;
@@ -293,8 +333,9 @@ public class PostService {
     //    lay ra danh sach nguoi like bai post
     public UserLikePostResponse getUserLikePost(int postId) {
         UserLikePostResponse userLikePostResponse = new UserLikePostResponse();
-        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,0);
-        if(userPost != null) {
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
+                0);
+        if (userPost != null) {
             List<Like> listLikeByPost = likeRepository.findLikeByLikePostId(postId);
             List<String> listUsernameLikePost = new ArrayList<>();
             for (Like like : listLikeByPost) {

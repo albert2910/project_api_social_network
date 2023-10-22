@@ -81,6 +81,11 @@ public class PostController {
         return postService.getUserLikePost(postId);
     }
 
+    @GetMapping("/post/{postId}")
+    public PostResponse getPostById(@PathVariable int postId) {
+        return postService.findPostById(postId);
+    }
+
     @GetMapping("/new-feed")
     public GetNewFeedResponse getNewFeed() {
         return postService.getNewFeed();
