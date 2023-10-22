@@ -1,0 +1,14 @@
+
+H
+java:S1452E"&Remove usage of generic wildcard type.(á‘€¿üÿÿÿÿ8÷³±â´1
+i
+java:S1128"GRemove this unused import 'com.example.demospringsecurity.model.Image'.(Æ¢ÓÃúÿÿÿÿ8şœ³â´1
+n
+java:S1128
+"LRemove this unused import 'org.springframework.core.io.InputStreamResource'.(¡±ù”ıÿÿÿÿ8şœ³â´1
+M
+java:S1128"0Remove this unused import 'java.io.InputStream'.(¹»º8şœ³â´1
+O
+java:S1128"2Remove this unused import 'java.sql.SQLException'.(ÛïÆŸ8ÿœ³â´1
+Q
+java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ8ÿœ³â´1

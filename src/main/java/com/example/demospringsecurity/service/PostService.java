@@ -56,6 +56,7 @@ public class PostService {
             LocalDateTime dateCreate = LocalDateTime.now();
             upPostRequest.setPostCreateDate(dateCreate);
             UserPost userPostt = postMapper.toEntity(upPostRequest);
+            userPostt.setPostDeleteFlag(0);
             UserPost userPostSaved = userPostRepository.save(userPostt);
             List<String> listImages = upPostRequest.getPostUrlImages();
             List<Image> imageList = new ArrayList<>();
@@ -79,11 +80,13 @@ public class PostService {
 
 
     public UpPostResponse editPost(UpPostRequest upPostRequest) {
-        Optional<UserPost> userPost = userPostRepository.findById(upPostRequest.getPostId());
-        upPostRequest.setPostCreateDate(userPost.get().getPostCreateDate());
         UpPostResponse upPostResponse = new UpPostResponse();
-        if (userPost.isPresent()) {
-            Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.get().getPostUserId());
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(upPostRequest.getPostId(),
+                0);
+
+        if (userPost != null) {
+            upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
+            Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.getPostUserId());
             if (userInfo.get().getUserId() == upPostRequest.getPostUserId()) {
                 List<String> imagesEdit = upPostRequest.getPostUrlImages();
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
@@ -112,6 +115,7 @@ public class PostService {
                             0);
                 }
                 UserPost userPost1 = postMapper.toEntity(upPostRequest);
+                userPost1.setPostDeleteFlag(0);
                 UserPost userPostEdited = userPostRepository.save(userPost1);
                 PostDto postDto = postMapper.toDto(userPostEdited);
                 List<Comment> commentList = commentRepository.findCommentByCommentPostId(postDto.getPostId());
@@ -128,13 +132,42 @@ public class PostService {
                 upPostResponse.setMessage("You cannot edit this post!");
                 upPostResponse.setStatus("400");
             }
+        } else {
+            upPostResponse.setMessage("Not found this post!");
+            upPostResponse.setStatus("400");
         }
         return upPostResponse;
     }
 
     public DeletePostResponse deletePost(int idPost) {
         DeletePostResponse deletePostResponse = new DeletePostResponse();
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            UserPost userPost = userPostRepository.findById(idPost).get();
+            if (userPost != null) {
+                if (userPost.getPostUserId() == userInfo.getUserId()) {
+                    userPost.setPostDeleteFlag(1);
+                    userPostRepository.save(userPost);
+                    deletePostResponse.setMessage("Delete post successful!");
+                    deletePostResponse.setStatus("200");
+                    deletePostResponse.setIdPostDelete(userPost.getPostId());
+                } else {
+                    deletePostResponse.setMessage("You can not delete this post!");
+                    deletePostResponse.setStatus("400");
+                    deletePostResponse.setIdPostDelete(0);
+                }
+            } else {
+                deletePostResponse.setMessage("Not found post!");
+                deletePostResponse.setStatus("400");
+                deletePostResponse.setIdPostDelete(0);
+            }
+        } else {
+            deletePostResponse.setMessage("Token is invalid!");
+            deletePostResponse.setStatus("403");
+            deletePostResponse.setIdPostDelete(0);
+        }
         return deletePostResponse;
     }
 
@@ -163,8 +196,16 @@ public class PostService {
         return getAllPostResponse;
     }
 
-    public LikeResponse likePost(LikeRequest likeRequest) {
+    public LikeResponse likePost(int postId) {
+        LikeRequest likeRequest = new LikeRequest();
         LikeResponse likeResponse = new LikeResponse();
+        likeRequest.setPostId(postId);
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,0);
+        if(userPost == null) {
+            likeResponse.setMessage("Not found this post!");
+            likeResponse.setStatus("400");
+            return likeResponse;
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
@@ -226,22 +267,25 @@ public class PostService {
     }
 
     public List<PostDto> getAllPostsByUserId(int userId) {
-        List<UserPost> userPostList = userPostRepository.findUserPostByPostUserId(userId);
+        List<UserPost> userPostList = userPostRepository.findUserPostsByPostUserIdAndAndPostDeleteFlag(userId,
+                0);
         List<PostDto> postDtos = new ArrayList<>();
-        for (UserPost userPost : userPostList) {
-            PostDto postDto = postMapper.toDto(userPost);
-            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
-                    0);
-            List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
-            if (!imageList.isEmpty()) {
-                postDto.setPostImages(imageList);
+        if (!userPostList.isEmpty()) {
+            for (UserPost userPost : userPostList) {
+                PostDto postDto = postMapper.toDto(userPost);
+                List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
+                        0);
+                List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+                if (!imageList.isEmpty()) {
+                    postDto.setPostImages(imageList);
+                }
+                if (!commentList.isEmpty()) {
+                    postDto.setPostComments(commentList);
+                }
+                postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                        1));
+                postDtos.add(postDto);
             }
-            if (!commentList.isEmpty()) {
-                postDto.setPostComments(commentList);
-            }
-            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
-                    1));
-            postDtos.add(postDto);
         }
         return postDtos;
     }
@@ -249,14 +293,22 @@ public class PostService {
     //    lay ra danh sach nguoi like bai post
     public UserLikePostResponse getUserLikePost(int postId) {
         UserLikePostResponse userLikePostResponse = new UserLikePostResponse();
-        List<Like> listLikeByPost = likeRepository.findLikeByLikePostId(postId);
-        List<String> listUsernameLikePost = new ArrayList<>();
-        for (Like like : listLikeByPost) {
-            listUsernameLikePost.add(userInfoRepository.findById(like.getLikeUserId()).get().getUserName());
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,0);
+        if(userPost != null) {
+            List<Like> listLikeByPost = likeRepository.findLikeByLikePostId(postId);
+            List<String> listUsernameLikePost = new ArrayList<>();
+            for (Like like : listLikeByPost) {
+                listUsernameLikePost.add(userInfoRepository.findById(like.getLikeUserId()).get().getUserName());
+            }
+            userLikePostResponse.setStatus("200");
+            userLikePostResponse.setMessage("Get list userName like post successfully!");
+            userLikePostResponse.setUserNamesLikePost(listUsernameLikePost);
+        } else {
+            userLikePostResponse.setStatus("400");
+            userLikePostResponse.setMessage("Not found this post!");
+            userLikePostResponse.setUserNamesLikePost(null);
         }
-        userLikePostResponse.setStatus("200");
-        userLikePostResponse.setMessage("Get list userName like post successfully!");
-        userLikePostResponse.setUserNamesLikePost(listUsernameLikePost);
+
         return userLikePostResponse;
     }
 

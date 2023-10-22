@@ -20,6 +20,7 @@ public class PostDto {
     private int like;
     private int postUserId;
     private LocalDateTime postCreateDate;
+    private int postDeleteFlag;
 
 }
 

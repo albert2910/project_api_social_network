@@ -32,6 +32,7 @@ public class PostMapperImpl implements PostMapper {
         postDto.setPostContent(entity.getPostContent());
         postDto.setPostUserId(entity.getPostUserId());
         postDto.setPostCreateDate(entity.getPostCreateDate());
+        postDto.setPostDeleteFlag(entity.getPostDeleteFlag());
         return postDto;
     }
 }

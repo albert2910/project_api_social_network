@@ -25,3 +25,13 @@ databaseChangeLog:
               - column:
                   name: post_user_time_create
                   type: datetime
+  - changeSet:
+      id: 17
+      author: admin
+      changes:
+        - addColumn:
+            tableName: TBUser_post
+            columns:
+              - column:
+                  name: post_delete_flag
+                  type: int

@@ -29,5 +29,9 @@ public class UserPost {
     @Column(name = "post_user_time_create")
     private LocalDateTime postCreateDate;
 
+//  postDeleteFlag = 0 -> exist
+//  postDeleteFlag = 1 -> deleted
+    @Column(name = "post_delete_flag")
+    private int postDeleteFlag;
 
 }

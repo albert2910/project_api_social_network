@@ -29,4 +29,5 @@ public class Comment {
 
     @Column(name = "comment_date_create")
     private LocalDateTime commentCreateDate;
+
 }

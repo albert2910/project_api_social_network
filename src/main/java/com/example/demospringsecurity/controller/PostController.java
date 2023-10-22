@@ -60,15 +60,19 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
+    @DeleteMapping("/delete-post/{postId}")
+    public DeletePostResponse deletePost(@PathVariable int postId) {
+        return postService.deletePost(postId);
+    }
+
     @GetMapping("/all-posts")
     public GetAllPostResponse getAllPosts() {
         return postService.getAllPosts();
     }
 
     @PostMapping("/like-post/{postId}")
-    public ResponseEntity<?> likePost(@PathVariable int postId, @RequestBody LikeRequest likeRequest) {
-        likeRequest.setPostId(postId);
-        return new ResponseEntity<>(postService.likePost(likeRequest),
+    public ResponseEntity<?> likePost(@PathVariable int postId) {
+        return new ResponseEntity<>(postService.likePost(postId),
                 HttpStatus.OK);
     }
 

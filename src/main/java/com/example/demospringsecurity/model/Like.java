@@ -32,4 +32,5 @@ public class Like {
 
     @Column(name = "like_time_create")
     private LocalDateTime likeCreateDate;
+
 }

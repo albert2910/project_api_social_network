@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class DeletePostResponse {
     private String status;
     private String message;
-    private PostDto postDto;
+    private int idPostDelete;
 }

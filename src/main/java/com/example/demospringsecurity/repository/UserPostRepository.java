@@ -14,6 +14,10 @@ import java.util.List;
 @Repository
 public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
     List<UserPost> findUserPostByPostUserId(int postUserId);
+
+    List<UserPost> findUserPostsByPostUserIdAndAndPostDeleteFlag(int postUserId, int postDeleteFlag);
+
+    UserPost findUserPostByPostIdAndAndPostDeleteFlag(int postId, int postDeleteFlag);
     @Query(nativeQuery = true, value = "select count(tbuser_post.post_id) as numberPostLastWeek from social_network.tbuser_post where tbuser_post.post_user_id = :userId and (SELECT DATEDIFF(:current_date, tbuser_post.post_user_time_create) <= 7);")
     int countPostLastWeek(@Param("userId") int userId ,@Param("current_date") LocalDateTime localDateTime);
 
