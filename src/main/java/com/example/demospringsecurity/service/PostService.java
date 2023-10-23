@@ -92,6 +92,28 @@ public class PostService {
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
                         0);
                 List<Image> imagesEdited = new ArrayList<>();
+//                if(!upPostRequest.isDeleteImages() && imagesEdit == null) {
+//                    imagesEdited = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
+//                            0);
+//                } else {
+//                    if (!imageList.isEmpty()) {
+//                        for (Image image : imageList) {
+//                            System.out.println(image.getImageUrl());
+//                            image.setImageFlagDelete(1);
+//                            imageRepository.save(image);
+//                        }
+//                    }
+//                    if (!imagesEdit.isEmpty()) {
+//                        for (String s : imagesEdit) {
+//                            Image image = new Image();
+//                            image.setImageUrl(s);
+//                            image.setImagePostId(upPostRequest.getPostId());
+//                            image.setImageFlagDelete(0);
+//                            Image imageSaved = imageRepository.save(image);
+//                            imagesEdited.add(imageSaved);
+//                        }
+//                    }
+//                }
                 if (imagesEdit != null) {
                     if (!imageList.isEmpty()) {
                         for (Image image : imageList) {
@@ -108,6 +130,14 @@ public class PostService {
                             image.setImageFlagDelete(0);
                             Image imageSaved = imageRepository.save(image);
                             imagesEdited.add(imageSaved);
+                        }
+                    }
+                } else if (upPostRequest.isDeleteImages()) {
+                    if (!imageList.isEmpty()) {
+                        for (Image image : imageList) {
+                            System.out.println(image.getImageUrl());
+                            image.setImageFlagDelete(1);
+                            imageRepository.save(image);
                         }
                     }
                 } else {

@@ -16,4 +16,7 @@ public class UpPostRequest {
     private List<String> postUrlImages;
     private int postUserId;
     private LocalDateTime postCreateDate;
+//  true: co xoa anh (neu postUrlImages isEmpty => xoa anh cu)
+//  false: ko xoa anh (neu postUrlImages isEmpty => set anh cu)
+    private boolean deleteImages;
 }

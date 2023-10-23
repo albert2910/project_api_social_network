@@ -49,3 +49,15 @@ p
 @src/main/java/com/example/demospringsecurity/model/UserPost.java,6\d\6d532a8c5e30a5f6c87e62c8889ac5eddfcba0c6
 }
 Msrc/main/java/com/example/demospringsecurity/response/DeletePostResponse.java,b\a\bab6cd92dcafb41ec37b1bb271bc09147663ddf9
+{
+Ksrc/main/java/com/example/demospringsecurity/dto/request/UpPostRequest.java,a\e\ae2c768e3f5fdbe0d6c99791feed919f493ed776
+w
+Gsrc/main/java/com/example/demospringsecurity/mapper/PostMapperImpl.java,1\9\19be069f5b8afcf847bff7bbee06efd16778a900
+w
+Gsrc/main/java/com/example/demospringsecurity/mapperImpl/PostMapper.java,3\a\3a1a09427a4b6a0308c98e25ea1fc18ad0c8c629
+
+Osrc/main/java/com/example/demospringsecurity/repository/UserPostRepository.java,0\7\07de95953c00eba8719fc179526ec8e532e74aaf
+w
+Gsrc/main/java/com/example/demospringsecurity/response/PostResponse.java,4\7\477eff2ebd18dd73657b3ff22106b83fbd7b1b57
+o
+?src/main/java/com/example/demospringsecurity/model/Comment.java,c\e\cee854b4ad8b94abf56c038bdb75ab7c170fda51

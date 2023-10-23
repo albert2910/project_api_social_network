@@ -9,8 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
-public interface PasswordResetTokenRepository extends CrudRepository<PasswordResetToken, Integer> {
-    Optional<PasswordResetToken> findPasswordResetTokenByUserIdAndAndTokenReset(int userId,String token);
+public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Integer> {
+    PasswordResetToken findPasswordResetTokenByUserIdAndAndTokenReset(int userId,String token);
 
     Optional<PasswordResetToken> findPasswordResetTokenByUserId(int userId);
+
+    PasswordResetToken findPasswordResetTokenByTokenReset(String tokenReset);
+
+
 }

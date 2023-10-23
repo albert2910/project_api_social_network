@@ -128,17 +128,17 @@ public class UserService {
             passwordChangeResponse.setMessage("Invalid request! New password not equal renew password!");
             return passwordChangeResponse;
         }
-        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserIdAndAndTokenReset(authChangePassword.getUserId(),
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
                 authChangePassword.getTokenReset());
-        if (passwordResetToken.isPresent()) {
-            if (!checkTimeTokenReset(passwordResetToken.get())) {
+        if (passwordResetToken != null) {
+            if (!checkTimeTokenReset(passwordResetToken)) {
                 passwordChangeResponse.setStatus("406");
                 passwordChangeResponse.setMessage("token has expired");
             } else {
-                Optional<UserInfo> userInfo = userInfoRepository.findByUserId(authChangePassword.getUserId());
+                Optional<UserInfo> userInfo = userInfoRepository.findByUserId(passwordResetToken.getUserId());
                 if (userInfo.isPresent()) {
                     UserInfo userInfoChangePassword = new UserInfo();
-                    userInfoChangePassword.setUserId(authChangePassword.getUserId());
+                    userInfoChangePassword.setUserId(userInfo.get().getUserId());
                     userInfoChangePassword.setUserEmail(userInfo.get().getUserEmail());
                     userInfoChangePassword.setUserPassword(new BCryptPasswordEncoder().encode(authChangePassword.getNewPassword()));
                     userInfoChangePassword.setUserName(userInfo.get().getUserName());
