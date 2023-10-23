@@ -2,20 +2,20 @@
 t
 java:S1192_"WDefine a constant instead of duplicating this literal "Sent a friend request!" 3 times.(ÌÈ˜8‡„šÙ´1
 Z
-java:S3655Û"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
+java:S3655–"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
 S
 java:S3655R"7Call "Optional#isPresent()" before accessing the value.(ï†y8Ë„šÙ´1
 Z
-java:S3655–"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
-Z
-java:S3655ü"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
+java:S3655°"7Call "Optional#isPresent()" before accessing the value.(ª¹¶ÿûÿÿÿÿ8Ë„šÙ´1
+U
+java:S3655è"7Call "Optional#isPresent()" before accessing the value.(¶Ö–Ì8Ë„šÙ´1
+Y
+java:S3655("7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
 Y
 java:S3655K"7Call "Optional#isPresent()" before accessing the value.(ÍÀÊ›ıÿÿÿÿ8Ê„šÙ´1
 Z
-java:S3655°"7Call "Optional#isPresent()" before accessing the value.(ª¹¶ÿûÿÿÿÿ8Ë„šÙ´1
-Y
-java:S3655("7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
+java:S3655Û"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
 Z
 java:S3655Ç"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1
-U
-java:S3655è"7Call "Optional#isPresent()" before accessing the value.(¶Ö–Ì8Ë„šÙ´1
+Z
+java:S3655ü"7Call "Optional#isPresent()" before accessing the value.(Ö„Í¤ùÿÿÿÿ8Ë„šÙ´1

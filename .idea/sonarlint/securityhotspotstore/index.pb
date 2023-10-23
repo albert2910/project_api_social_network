@@ -61,3 +61,15 @@ w
 Gsrc/main/java/com/example/demospringsecurity/response/PostResponse.java,4\7\477eff2ebd18dd73657b3ff22106b83fbd7b1b57
 o
 ?src/main/java/com/example/demospringsecurity/model/Comment.java,c\e\cee854b4ad8b94abf56c038bdb75ab7c170fda51
+Å
+Qsrc/main/java/com/example/demospringsecurity/response/PasswordChangeResponse.java,a\0\a099a7a1717f0745c6434381d6785a549004efe2
+Ä
+Psrc/main/java/com/example/demospringsecurity/dto/request/AuthChangePassword.java,7\4\742c76fc6547abf124ae2be4e37989b36f8fbda7
+z
+Jsrc/main/java/com/example/demospringsecurity/model/PasswordResetToken.java,6\b\6b49122709e9cdfe3135b04cc50f8ff0941cfaaf
+â
+Ysrc/main/java/com/example/demospringsecurity/repository/PasswordResetTokenRepository.java,8\6\8601e41be7f454e498954fb00d7fe0ed96d5972b
+y
+Isrc/main/java/com/example/demospringsecurity/dto/request/AuthRequest.java,8\9\89e99b7c6341c9326778763f6c6bc37b623702c8
+7
+pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec

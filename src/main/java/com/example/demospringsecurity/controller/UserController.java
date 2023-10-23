@@ -9,6 +9,7 @@ import com.example.demospringsecurity.service.OtpService;
 import com.example.demospringsecurity.service.UserService;
 import com.example.demospringsecurity.util.FileDownloadUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public LoginResponse authenticateAndGetOtp(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<LoginResponse> authenticateAndGetOtp(@RequestBody @Valid AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(),
                     authRequest.getPassword()));
@@ -63,7 +64,7 @@ public class UserController {
                 loginResponse.setOtp(otpService.sendOtp(authRequest.getUserName()));
                 loginResponse.setMessage("OTP: " + loginResponse.getOtp());
             }
-            return loginResponse;
+            return new ResponseEntity<>(loginResponse,HttpStatus.OK);
         } catch (AuthenticationException e) {
             e.printStackTrace();
             throw new BadCredentialsException("adu");
