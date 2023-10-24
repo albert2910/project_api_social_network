@@ -71,7 +71,6 @@ public class UserService {
      */
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
         RegisterResponse registerResponse = new RegisterResponse();
-        if (registerRequest != null) {
 //            check trùng email
             if (userInfoRepository.existsUserInfoByUserEmail(registerRequest.getUserEmail())) {
                 registerResponse.setMessage("Email already exists!");
@@ -90,9 +89,6 @@ public class UserService {
                 registerResponse.setSuccess(true);
                 registerResponse.setUserInfo(userInfo);
             }
-        } else {
-            throw new NullPointerException();
-        }
         return registerResponse;
     }
 

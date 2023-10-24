@@ -8,8 +8,11 @@ import com.example.demospringsecurity.service.JwtService;
 import com.example.demospringsecurity.service.OtpService;
 import com.example.demospringsecurity.service.UserService;
 import com.example.demospringsecurity.util.FileDownloadUtil;
+import com.example.demospringsecurity.validator.ValidFile;
+import com.example.demospringsecurity.validator.ValidSizeFile;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +32,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
+@Validated
 public class UserController {
     @Autowired
     JwtService jwtService;
@@ -94,7 +99,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/change-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart("file") MultipartFile multipartFile, ChangeInfoUserRequest changeInfoUserRequest) throws IOException {
+    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart("file") @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
         FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
         changeInfoUserRequest.setUserAvatar(fileUploadResponse.getFileName());
         return new ResponseEntity<>(userService.updateInfoUser(changeInfoUserRequest),
@@ -105,7 +110,6 @@ public class UserController {
     public ResponseEntity<?> getAvatarUser(@PathVariable int id) {
         UserInfo userInfo = userService.findUserById(id);
         FileDownloadUtil downloadUtil = new FileDownloadUtil();
-
         Resource resource;
 
         try {
@@ -119,7 +123,7 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 //        String contentType = "application/octet-stream";
-        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+//        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)

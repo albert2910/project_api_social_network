@@ -17,4 +17,5 @@ public class ChangeInfoUserRequest {
     private String userEmail;
     private Date userBirthDate;
     private String userAddress;
+
 }
