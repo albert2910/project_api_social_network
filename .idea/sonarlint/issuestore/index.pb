@@ -73,3 +73,7 @@ y
 Isrc/main/java/com/example/demospringsecurity/dto/request/AuthRequest.java,8\9\89e99b7c6341c9326778763f6c6bc37b623702c8
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
+
+Osrc/main/java/com/example/demospringsecurity/config/GlobalExceptionHandler.java,e\5\e56c4365a899e7475aa52abcab056509ae75009e
+|
+Lsrc/main/java/com/example/demospringsecurity/dto/request/AuthOtpRequest.java,7\c\7c441f5f8875cd5b6bc200ff00360081244379b5

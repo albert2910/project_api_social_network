@@ -135,7 +135,6 @@ public class PostService {
                 } else if (upPostRequest.isDeleteImages()) {
                     if (!imageList.isEmpty()) {
                         for (Image image : imageList) {
-                            System.out.println(image.getImageUrl());
                             image.setImageFlagDelete(1);
                             imageRepository.save(image);
                         }

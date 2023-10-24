@@ -4,14 +4,17 @@ import com.example.demospringsecurity.dto.ReportUserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
+import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapperImpl.UserChangeInfoMapper;
 import com.example.demospringsecurity.mapperImpl.UserMapper;
 import com.example.demospringsecurity.model.ExcelGenerator;
-import com.example.demospringsecurity.model.Like;
 import com.example.demospringsecurity.model.PasswordResetToken;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.*;
-import com.example.demospringsecurity.response.*;
+import com.example.demospringsecurity.response.ChangeInfoUserResponse;
+import com.example.demospringsecurity.response.PasswordChangeResponse;
+import com.example.demospringsecurity.response.PasswordResetTokenResponse;
+import com.example.demospringsecurity.response.RegisterResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,7 +29,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -99,25 +104,21 @@ public class UserService {
      */
     public PasswordResetTokenResponse forgotPassword(String username) {
         PasswordResetTokenResponse passwordResetTokenResponse = new PasswordResetTokenResponse();
-        Optional<UserInfo> userInfo = userInfoRepository.findByUserName(username);
+        Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + username)));
 //        check tài khoản tồn tại bởi username
-        if (!userInfo.isPresent()) {
-            passwordResetTokenResponse.setStatus("404");
-            passwordResetTokenResponse.setMessage("Not found user!");
-        } else {
-            Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserId(userInfo.get().getUserId());
-            String tokenReset = UUID.randomUUID().toString();
-            PasswordResetToken passwordResetTokenAdd = new PasswordResetToken();
-            passwordResetTokenAdd.setTokenReset(tokenReset);
-            LocalDateTime dateResetToken = java.time.LocalDateTime.now();
-            passwordResetTokenAdd.setPasswordResetToken_datetime(dateResetToken);
-            passwordResetTokenAdd.setUserId(userInfo.get().getUserId());
-            passwordResetToken.ifPresent(resetToken -> passwordResetTokenAdd.setPasswordResetTokenId(resetToken.getPasswordResetTokenId()));
-            passwordResetTokenRepository.save(passwordResetTokenAdd);
-            passwordResetTokenResponse.setStatus("200");
-            passwordResetTokenResponse.setResetToken(tokenReset);
-            passwordResetTokenResponse.setMessage("New token: " + passwordResetTokenResponse.getResetToken());
-        }
+        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserId(userInfo.get().getUserId());
+        String tokenReset = UUID.randomUUID().toString();
+        PasswordResetToken passwordResetTokenAdd = new PasswordResetToken();
+        passwordResetTokenAdd.setTokenReset(tokenReset);
+        LocalDateTime dateResetToken = java.time.LocalDateTime.now();
+        passwordResetTokenAdd.setPasswordResetToken_datetime(dateResetToken);
+        passwordResetTokenAdd.setUserId(userInfo.get().getUserId());
+        passwordResetToken.ifPresent(resetToken -> passwordResetTokenAdd.setPasswordResetTokenId(resetToken.getPasswordResetTokenId()));
+        passwordResetTokenRepository.save(passwordResetTokenAdd);
+        passwordResetTokenResponse.setStatus("200");
+        passwordResetTokenResponse.setResetToken(tokenReset);
+        passwordResetTokenResponse.setMessage("New token: " + passwordResetTokenResponse.getResetToken());
+
         return passwordResetTokenResponse;
     }
 
@@ -258,10 +259,12 @@ public class UserService {
                     currentDate);
             reportUserDto.setNewCommentsLastWeek(countCommentsLastWeek);
 //            lay ra danh sach ban be user da ket ban trong vong 1 tuan
-            int countNewFriendsLastWeek = friendRepository.countNewFriendsLastWeek(userInfo.getUserId(), currentDate);
+            int countNewFriendsLastWeek = friendRepository.countNewFriendsLastWeek(userInfo.getUserId(),
+                    currentDate);
             reportUserDto.setNewFriendLastWeek(countNewFriendsLastWeek);
 //            lay ra so like user dang nhap da like trong vong 1 tuan
-            int countLikesLastWeek = likeRepository.countLikesLastWeekByMe(userInfo.getUserId(), currentDate);
+            int countLikesLastWeek = likeRepository.countLikesLastWeekByMe(userInfo.getUserId(),
+                    currentDate);
             reportUserDto.setNewLikesLastWeek(countLikesLastWeek);
         }
         return reportUserDto;

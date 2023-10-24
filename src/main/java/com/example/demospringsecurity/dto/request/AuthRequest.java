@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequest {
-    @NotBlank(message = "Invalid Name: Empty userName")
+    @NotBlank(message = "Invalid userName: Empty userName")
     @NotNull(message = "Invalid userName: userName is NULL")
     @Size(min = 3, max = 30, message = "Invalid userName: Exceeds 30 characters")
     private String userName;
 
-    @NotBlank(message = "Invalid Name: Empty password")
-    @NotNull(message = "Invalid Name: Password is NULL")
-    @Size(min = 6, message = "Invalid password: Must >= 6 characters")
+    @NotBlank(message = "Invalid password: Empty password")
+    @NotNull(message = "Invalid password: Password is NULL")
+    @Size(min = 8, max = 10, message = "Invalid password: Minimum eight and maximum 10 characters")
     private String password;
 }

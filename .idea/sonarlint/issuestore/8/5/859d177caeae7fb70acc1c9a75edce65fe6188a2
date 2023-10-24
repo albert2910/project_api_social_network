@@ -5,11 +5,14 @@ l
 java:S1192R"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8©ã¦â´1
 ^
 java:S4973~"<Strings and Boxed types should be compared using "equals()".(â¸÷°øÿÿÿÿ8ªã¦â´1
-T
-java:S3655¹"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8öã¦â´1
 Z
 java:S3655à"7Call "Optional#isPresent()" before accessing the value.(æ‰“¬üÿÿÿÿ8öã¦â´1
 T
 java:S3655ù"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8…­­µ1
+T
+java:S3655¹"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8öã¦â´1
 p
 java:S3776´"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(úöìµ8„ä¦â´1
+h
+java:S1128
+"FRemove this unused import 'com.example.demospringsecurity.model.Like'.(½¿É×şÿÿÿÿ8Ÿ•ÙÛµ1

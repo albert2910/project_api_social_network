@@ -73,13 +73,13 @@ public class UserController {
     }
 
     @PostMapping("/verify")
-    public OtpResponse authenticateAndGetToken(@RequestBody AuthOtpRequest authOtpRequest) {
+    public OtpResponse authenticateAndGetToken(@RequestBody @Valid AuthOtpRequest authOtpRequest) {
         return otpService.verifyOtp(authOtpRequest.getUserName(),
                 authOtpRequest.getOtp());
     }
 
     @PostMapping("/register")
-    public RegisterResponse registerUser(@RequestBody RegisterRequest registerRequest) {
+    public RegisterResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
         return userService.registerUser(registerRequest);
     }
 
@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public PasswordChangeResponse changePassword(@RequestBody AuthChangePassword authChangePassword) {
+    public PasswordChangeResponse changePassword(@RequestBody @Valid AuthChangePassword authChangePassword) {
         return userService.changePassword(authChangePassword);
     }
 
