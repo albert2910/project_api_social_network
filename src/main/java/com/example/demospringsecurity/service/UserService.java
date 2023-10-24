@@ -72,23 +72,23 @@ public class UserService {
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
         RegisterResponse registerResponse = new RegisterResponse();
 //            check trùng email
-            if (userInfoRepository.existsUserInfoByUserEmail(registerRequest.getUserEmail())) {
-                registerResponse.setMessage("Email already exists!");
-                registerResponse.setSuccess(false);
-                registerResponse.setUserInfo(null);
-            } else if (userInfoRepository.existsUserInfosByUserName(registerRequest.getUserName())) {
-                registerResponse.setMessage("Username already exists!");
-                registerResponse.setSuccess(false);
-                registerResponse.setUserInfo(null);
-            } else {
-                UserInfo userInfo = userMapper.toEntity(registerRequest);
-                userInfo.setUserPassword(new BCryptPasswordEncoder().encode(registerRequest.getUserPassword()));
-                userInfo.setRoles("ROLE_USER");
-                userInfoRepository.save(userInfo);
-                registerResponse.setMessage("Register success!");
-                registerResponse.setSuccess(true);
-                registerResponse.setUserInfo(userInfo);
-            }
+        if (userInfoRepository.existsUserInfoByUserEmail(registerRequest.getUserEmail())) {
+            registerResponse.setMessage("Email already exists!");
+            registerResponse.setSuccess(false);
+            registerResponse.setUserInfo(null);
+        } else if (userInfoRepository.existsUserInfosByUserName(registerRequest.getUserName())) {
+            registerResponse.setMessage("Username already exists!");
+            registerResponse.setSuccess(false);
+            registerResponse.setUserInfo(null);
+        } else {
+            UserInfo userInfo = userMapper.toEntity(registerRequest);
+            userInfo.setUserPassword(new BCryptPasswordEncoder().encode(registerRequest.getUserPassword()));
+            userInfo.setRoles("ROLE_USER");
+            userInfoRepository.save(userInfo);
+            registerResponse.setMessage("Register success!");
+            registerResponse.setSuccess(true);
+            registerResponse.setUserInfo(userInfo);
+        }
         return registerResponse;
     }
 
@@ -179,12 +179,8 @@ public class UserService {
         ChangeInfoUserResponse changeInfoUserResponse = new ChangeInfoUserResponse();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
-            changeInfoUserRequest.setUserId(userInfo.getUserId());
-        }
-        Optional<UserInfo> userInfo = userInfoRepository.findByUserId(changeInfoUserRequest.getUserId());
-
-        if (userInfo.isPresent()) {
+            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(currentUserName).orElseThrow(() -> new UserNotFoundException("Not found User username: " + currentUserName)));
+            changeInfoUserRequest.setUserId(userInfo.get().getUserId());
             UserInfo userInfoUpdate = userChangeInfoMapper.toEntity(changeInfoUserRequest);
             if (changeInfoUserRequest.getUserName() == null || changeInfoUserRequest.getUserName().isEmpty()) {
                 userInfoUpdate.setUserName(userInfo.get().getUserName());
@@ -211,14 +207,14 @@ public class UserService {
             changeInfoUserResponse.setMessage("Update success");
             changeInfoUserResponse.setUserInfoUpdate(userInfoUpdate);
         } else {
-            changeInfoUserResponse.setStatus("404");
-            changeInfoUserResponse.setMessage("Not found user!");
+            changeInfoUserResponse.setStatus("400");
+            changeInfoUserResponse.setMessage("Token is invalid!");
         }
         return changeInfoUserResponse;
     }
 
     public UserInfo findUserById(int id) {
-        return userInfoRepository.findByUserId(id).get();
+        return userInfoRepository.findByUserId(id).orElseThrow(() -> new UserNotFoundException("Not found user!"));
     }
 
     //  export file exel bao cao 1 tuan cua user dang nhap
