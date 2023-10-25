@@ -1,29 +1,28 @@
 
 s
-java:S1192¦"UDefine a constant instead of duplicating this literal "Not found this post!" 4 times.(“‚²³8ÌÛžÔµ1
+java:S1192¥"UDefine a constant instead of duplicating this literal "Not found this post!" 4 times.(“‚²³8ÌÛžÔµ1
 Z
-java:S3655Ä"7Call "Optional#isPresent()" before accessing the value.(ÆžÜìùÿÿÿÿ8§ÜžÔµ1
+java:S3655Ø"7Call "Optional#isPresent()" before accessing the value.(°¨À®ùÿÿÿÿ8¦ÜžÔµ1
 Z
-java:S3655Ù"7Call "Optional#isPresent()" before accessing the value.(°¨À®ùÿÿÿÿ8¦ÜžÔµ1
-Z
-java:S3655´"7Call "Optional#isPresent()" before accessing the value.(ÙœØ†ÿÿÿÿÿ8§ÜžÔµ1
+java:S3655³"7Call "Optional#isPresent()" before accessing the value.(ÙœØ†ÿÿÿÿÿ8§ÜžÔµ1
 T
-java:S3655š"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
+java:S3655×"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
 Z
-java:S3655ô"7Call "Optional#isPresent()" before accessing the value.(÷¿¦„úÿÿÿÿ8¦ÜžÔµ1
-S
-java:S36552"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
-T
-java:S3655Ø"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
+java:S3655Ã"7Call "Optional#isPresent()" before accessing the value.(ÆžÜìùÿÿÿÿ8§ÜžÔµ1
 U
-java:S3655È"7Call "Optional#isPresent()" before accessing the value.(å·áð8§ÜžÔµ1
+java:S3655Ç"7Call "Optional#isPresent()" before accessing the value.(å·áð8§ÜžÔµ1
+T
+java:S3655™"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
 T
 java:S3655Z"7Call "userInfo.isPresent()" before accessing the value.(Î„©â8¦ÜžÔµ1
+S
+java:S36552"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜžÔµ1
+Z
+java:S3655ó"7Call "Optional#isPresent()" before accessing the value.(÷¿¦„úÿÿÿÿ8¦ÜžÔµ1
 `
-java:S2583»"CChange this condition so that it does not always evaluate to "true"(âœƒn8§ÜžÔµ1
+java:S2583º"CChange this condition so that it does not always evaluate to "true"(âœƒn8§ÜžÔµ1
 o
 java:S3776R"RRefactor this method to reduce its Cognitive Complexity from 37 to the 15 allowed.(‡½Î•8®ÜžÔµ1
 ]	java:S125_"<This block of commented-out lines of code should be removed.(Ä…’Çøÿÿÿÿ8†ö Ôµ1
 G	java:S106x"+Replace this use of System.out by a logger.(Š¶Œ¬8±ÜžÔµ1
-H	java:S106Š"+Replace this use of System.out by a logger.(Š¶Œ¬8ÁÜžÔµ1
-H	java:S106Ï"+Replace this use of System.out by a logger.(çÝ×³8Ò Ôµ1
+H	java:S106Î"+Replace this use of System.out by a logger.(çÝ×³8Ò Ôµ1

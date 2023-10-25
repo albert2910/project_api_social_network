@@ -1,18 +1,13 @@
 
-r
-java:S1192j"PDefine a constant instead of duplicating this literal "Not found user!" 3 times.(Õ”ğ„ûÿÿÿÿ8¨ã¦â´1
 l
-java:S1192R"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8©ã¦â´1
+java:S1192V"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8Ä›ª†¶1
 ^
-java:S4973~"<Strings and Boxed types should be compared using "equals()".(â¸÷°øÿÿÿÿ8ªã¦â´1
-Z
-java:S3655à"7Call "Optional#isPresent()" before accessing the value.(æ‰“¬üÿÿÿÿ8öã¦â´1
+java:S4973{"<Strings and Boxed types should be compared using "equals()".(â¸÷°øÿÿÿÿ8Æ›ª†¶1
+Y
+java:S3655i"7Call "userInfo.isPresent()" before accessing the value.(€½ëúøÿÿÿÿ8œª†¶1
 T
-java:S3655ù"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8…­­µ1
-T
-java:S3655¹"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8öã¦â´1
+java:S3655ò"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8œª†¶1
+U
+java:S3655·"7Call "userInfo.isPresent()" before accessing the value.(…¦•Ë8œª†¶1
 p
-java:S3776´"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(úöìµ8„ä¦â´1
-h
-java:S1128
-"FRemove this unused import 'com.example.demospringsecurity.model.Like'.(½¿É×şÿÿÿÿ8Ÿ•ÙÛµ1
+java:S3776±"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(úöìµ8›œª†¶1

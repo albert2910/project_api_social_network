@@ -18,12 +18,6 @@ public class AuthChangePassword {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$", message = "Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
     private String newPassword;
 
-    @NotBlank(message = "Invalid reNewPassword: Empty reNewPassword")
-    @NotNull(message = "Invalid reNewPassword: reNewPassword is NULL")
-    // Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$", message = "Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
-    private String reNewPassword;
-
     @NotBlank(message = "Invalid tokenReset: Empty tokenReset")
     @NotNull(message = "Invalid tokenReset: tokenReset is NULL")
     private String tokenReset;

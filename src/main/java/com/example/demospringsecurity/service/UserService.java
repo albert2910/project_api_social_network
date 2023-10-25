@@ -120,11 +120,6 @@ public class UserService {
 
     public PasswordChangeResponse changePassword(AuthChangePassword authChangePassword) {
         PasswordChangeResponse passwordChangeResponse = new PasswordChangeResponse();
-        if (authChangePassword.getNewPassword() == authChangePassword.getReNewPassword()) {
-            passwordChangeResponse.setStatus("400");
-            passwordChangeResponse.setMessage("Invalid request! New password not equal renew password!");
-            return passwordChangeResponse;
-        }
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
                 authChangePassword.getTokenReset());
         if (passwordResetToken != null) {

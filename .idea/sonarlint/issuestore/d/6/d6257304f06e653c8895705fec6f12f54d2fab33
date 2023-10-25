@@ -1,0 +1,18 @@
+
+k	java:S117-"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÈÂ£Ÿøÿÿÿÿ
+k	java:S1170"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ğÏÚûÿÿÿÿ
+7
+java:S16437"Use a StringBuilder instead.(ô””Ùüÿÿÿÿ
+L
+java:S3655@"7Call "Optional#isPresent()" before accessing the value.(åÕØb
+L
+java:S3655"7Call "Optional#isPresent()" before accessing the value.(åÕØb
+@	java:S106"+Replace this use of System.out by a logger.(Ú”ÄÑ
+9
+java:S2119-"Save and re-use this "Random".(ÈÂ£Ÿøÿÿÿÿ
+?	java:S106:"+Replace this use of System.out by a logger.(›ÑQ
+b
+java:S1871T"LThis branch's code block is the same as the block for the branch on line 69.(å¥‡
+R
+java:S1128
+"7Remove this unused import 'java.security.SecureRandom'.(›éè™úÿÿÿÿ

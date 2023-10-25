@@ -6,11 +6,15 @@ import com.example.demospringsecurity.model.Image;
 import com.example.demospringsecurity.response.*;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
+import com.example.demospringsecurity.validator.ValidMultipleFile;
+import com.example.demospringsecurity.validator.ValidSizeMultipleFile;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@Validated
 public class PostController {
     @Autowired
     FileService fileService;
@@ -32,7 +37,7 @@ public class PostController {
 
 
     @PostMapping(value = "/up-post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UpPostResponse upPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
+    public UpPostResponse upPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
         List<String> listImages = new ArrayList<>();
         if (multipartFiles != null) {
             for (MultipartFile multipartFile : multipartFiles) {
@@ -45,7 +50,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/edit-post/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UpPostResponse editPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
+    public UpPostResponse editPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
         upPostRequest.setPostId(postId);
         if (multipartFiles != null) {
             List<String> listImages = new ArrayList<>();
