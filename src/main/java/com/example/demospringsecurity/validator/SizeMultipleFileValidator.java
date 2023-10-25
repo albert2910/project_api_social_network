@@ -14,12 +14,17 @@ public class SizeMultipleFileValidator implements ConstraintValidator<ValidSizeM
     @Override
     public boolean isValid(MultipartFile[] multipartFiles, ConstraintValidatorContext constraintValidatorContext) {
         boolean result = false;
-        for (MultipartFile multipartFile : multipartFiles) {
-            result = multipartFile.getSize() <= 1048576;
-            if(result == false) {
-                break;
+        if (multipartFiles != null) {
+            for (MultipartFile multipartFile : multipartFiles) {
+                result = multipartFile.getSize() <= 1048576;
+                if (result == false) {
+                    break;
+                }
             }
+        } else {
+            result = true;
         }
+
         return result;
     }
 }

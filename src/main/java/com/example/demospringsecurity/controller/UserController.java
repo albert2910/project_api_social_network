@@ -99,9 +99,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/change-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart("file") @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
-        FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
-        changeInfoUserRequest.setUserAvatar(fileUploadResponse.getFileName());
+    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file", required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
+        if(multipartFile != null) {
+            FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
+            changeInfoUserRequest.setUserAvatar(fileUploadResponse.getFileName());
+        } else {
+            changeInfoUserRequest.setUserAvatar(null);
+        }
         return new ResponseEntity<>(userService.updateInfoUser(changeInfoUserRequest),
                 HttpStatus.OK);
     }

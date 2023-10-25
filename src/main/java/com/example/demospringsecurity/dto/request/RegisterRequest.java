@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(type = "object" ,example = "{\n" +
+        "  \"userEmail\": \"string\",\n" +
+        "  \"userName\": \"string\",\n" +
+        "  \"userPassword\": \"string\"\n" +
+        "}")
 public class RegisterRequest {
     @NotBlank(message = "Invalid userEmail: Empty userEmail")
     @NotNull(message = "Invalid userEmail: userEmail is NULL")

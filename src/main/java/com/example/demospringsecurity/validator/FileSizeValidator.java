@@ -11,8 +11,13 @@ public class FileSizeValidator implements ConstraintValidator<ValidSizeFile, Mul
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
-//        1MB = 1048576
-        return multipartFile.getSize() <= 1048576;
+        if(multipartFile != null) {
+            //        1MB = 1048576
+            return multipartFile.getSize() <= 1048576;
+        } else {
+            return true;
+        }
+
     }
 
 }
