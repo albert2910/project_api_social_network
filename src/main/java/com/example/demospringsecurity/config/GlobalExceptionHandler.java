@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.config;
 
+import com.example.demospringsecurity.exceptions.TokenNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
@@ -29,6 +30,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, List<String>>> handleNotFoundException(UserNotFoundException ex) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<Map<String, List<String>>> handleTokenNotFoundException(UserNotFoundException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }

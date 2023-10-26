@@ -9,32 +9,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/friends")
 public class FriendController {
     @Autowired
     FriendService friendService;
 
-    @PostMapping("/add-friend/{userReceiverId}")
+    @PostMapping("/{userReceiverId}/add-friend")
     public FriendResponse addFriend(@PathVariable int userReceiverId) {
         return friendService.addFriend(userReceiverId);
     }
 
-    @PostMapping("/accept-friend/{userSenderId}")
+    @PostMapping("/{userSenderId}/accept-friend")
     public FriendResponse acceptFriend(@PathVariable int userSenderId) {
         return friendService.acceptFriend(userSenderId);
     }
 
-    @PostMapping("/unfriend/{userReceiverId}")
+    @PostMapping("/{userReceiverId}/unfriend")
     public FriendResponse unFriend(@PathVariable int userReceiverId) {
         return friendService.unFriend(userReceiverId);
     }
 
-    @GetMapping("/friendRequests")
+    @GetMapping("/requests")
     public GetFriendRequestsResponse getAllFriendRequests() {
         return friendService.getAllFriendRequestsByCurrentUser();
     }
 
-    @GetMapping("/list-friends")
+    @GetMapping("/my-friends")
     public GetListFriendResponse getListFriend() {
         return friendService.getListFriends();
     }

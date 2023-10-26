@@ -49,23 +49,16 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui.html",
                         "/api-docs/**",
                         "/swagger-ui/**",
-                        "/api/welcome",
-                        "/api/login",
-                        "/api/verify",
-                        "/api/register",
-                        "/api/forgot-password",
-                        "/api/change-password",
-                        "/api/get-avatar-user/{id}")
+                        "/api/v1/auth/**")
                 .permitAll()
-                .and()
-                .authorizeHttpRequests().requestMatchers("/api/**")
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter,
+                        UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(myAuthException)
                 .and()
                 .build();

@@ -31,20 +31,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/users")
 @Validated
 public class UserController {
-    @Autowired
-    JwtService jwtService;
-
-    @Autowired
-    OtpService otpService;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @Autowired
     UserService userService;
@@ -52,53 +41,8 @@ public class UserController {
     @Autowired
     FileService fileService;
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome to Demo Security Springboot";
-    }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticateAndGetOtp(@RequestBody @Valid AuthRequest authRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(),
-                    authRequest.getPassword()));
-            LoginResponse loginResponse = new LoginResponse();
-            if (authentication.isAuthenticated()) {
-                loginResponse.setStatus("200");
-                loginResponse.setUserName(authRequest.getUserName());
-                loginResponse.setOtp(otpService.sendOtp(authRequest.getUserName()));
-                loginResponse.setMessage("OTP: " + loginResponse.getOtp());
-            }
-            return new ResponseEntity<>(loginResponse,HttpStatus.OK);
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-            throw new BadCredentialsException("adu");
-        }
-
-    }
-
-    @PostMapping("/verify")
-    public OtpResponse authenticateAndGetToken(@RequestBody @Valid AuthOtpRequest authOtpRequest) {
-        return otpService.verifyOtp(authOtpRequest.getUserName(),
-                authOtpRequest.getOtp());
-    }
-
-    @PostMapping("/register")
-    public RegisterResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        return userService.registerUser(registerRequest);
-    }
-
-    @PostMapping("/forgot-password")
-    public PasswordResetTokenResponse forgotPassword(@RequestParam String username) {
-        return userService.forgotPassword(username);
-    }
-
-    @PostMapping("/change-password")
-    public PasswordChangeResponse changePassword(@RequestBody @Valid AuthChangePassword authChangePassword) {
-        return userService.changePassword(authChangePassword);
-    }
-
-    @PostMapping(value = "/change-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/info/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file", required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
         if(multipartFile != null) {
             FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
@@ -110,8 +54,8 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/get-avatar-user/{id}")
-    public ResponseEntity<?> getAvatarUser(@PathVariable int id) {
+    @GetMapping("/avatar/{idUser}")
+    public ResponseEntity<?> getAvatarUser(@PathVariable(name = "idUser") int id) {
         UserInfo userInfo = userService.findUserById(id);
         FileDownloadUtil downloadUtil = new FileDownloadUtil();
         Resource resource;
@@ -135,9 +79,5 @@ public class UserController {
                 .body(resource);
     }
 
-    @GetMapping("/export-to-excel")
-    public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
-        userService.exportReport(response);
-    }
 
 }

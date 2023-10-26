@@ -4,6 +4,7 @@ import com.example.demospringsecurity.dto.ReportUserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
+import com.example.demospringsecurity.exceptions.TokenNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapperImpl.UserChangeInfoMapper;
 import com.example.demospringsecurity.mapperImpl.UserMapper;
@@ -84,6 +85,7 @@ public class UserService {
             UserInfo userInfo = userMapper.toEntity(registerRequest);
             userInfo.setUserPassword(new BCryptPasswordEncoder().encode(registerRequest.getUserPassword()));
             userInfo.setRoles("ROLE_USER");
+            userInfo.setUserAvatar("avatardefault.jpg");
             userInfoRepository.save(userInfo);
             registerResponse.setMessage("Register success!");
             registerResponse.setSuccess(true);
@@ -120,32 +122,23 @@ public class UserService {
 
     public PasswordChangeResponse changePassword(AuthChangePassword authChangePassword) {
         PasswordChangeResponse passwordChangeResponse = new PasswordChangeResponse();
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
-                authChangePassword.getTokenReset());
-        if (passwordResetToken != null) {
-            if (!checkTimeTokenReset(passwordResetToken)) {
-                passwordChangeResponse.setStatus("406");
-                passwordChangeResponse.setMessage("token has expired");
-            } else {
-                Optional<UserInfo> userInfo = userInfoRepository.findByUserId(passwordResetToken.getUserId());
-                if (userInfo.isPresent()) {
-                    UserInfo userInfoChangePassword = new UserInfo();
-                    userInfoChangePassword.setUserId(userInfo.get().getUserId());
-                    userInfoChangePassword.setUserEmail(userInfo.get().getUserEmail());
-                    userInfoChangePassword.setUserPassword(new BCryptPasswordEncoder().encode(authChangePassword.getNewPassword()));
-                    userInfoChangePassword.setUserName(userInfo.get().getUserName());
-                    userInfoChangePassword.setRoles("ROLE_USER");
-                    userInfoRepository.save(userInfoChangePassword);
-                    passwordChangeResponse.setStatus("200");
-                    passwordChangeResponse.setMessage("Reset password success!");
-                } else {
-                    passwordChangeResponse.setStatus("404");
-                    passwordChangeResponse.setMessage("Not found user!");
-                }
-            }
+        Optional<PasswordResetToken> passwordResetToken = Optional.ofNullable(passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
+                authChangePassword.getTokenReset()).orElseThrow(() -> new TokenNotFoundException("Token is invalid!")));
+
+        if (!checkTimeTokenReset(passwordResetToken.get())) {
+            passwordChangeResponse.setStatus("406");
+            passwordChangeResponse.setMessage("token has expired");
         } else {
-            passwordChangeResponse.setStatus("404");
-            passwordChangeResponse.setMessage("Token is invalid!");
+            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserId(passwordResetToken.get().getUserId()).orElseThrow(() -> new UserNotFoundException("Not found user!")));
+            UserInfo userInfoChangePassword = new UserInfo();
+            userInfoChangePassword.setUserId(userInfo.get().getUserId());
+            userInfoChangePassword.setUserEmail(userInfo.get().getUserEmail());
+            userInfoChangePassword.setUserPassword(new BCryptPasswordEncoder().encode(authChangePassword.getNewPassword()));
+            userInfoChangePassword.setUserName(userInfo.get().getUserName());
+            userInfoChangePassword.setRoles("ROLE_USER");
+            userInfoRepository.save(userInfoChangePassword);
+            passwordChangeResponse.setStatus("200");
+            passwordChangeResponse.setMessage("Reset password success!");
         }
 
         return passwordChangeResponse;

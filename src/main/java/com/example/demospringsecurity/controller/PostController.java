@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/posts")
 @Validated
 public class PostController {
     @Autowired
@@ -36,7 +36,7 @@ public class PostController {
     PostService postService;
 
 
-    @PostMapping(value = "/up-post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UpPostResponse upPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
         List<String> listImages = new ArrayList<>();
         if (multipartFiles != null) {
@@ -49,7 +49,7 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
-    @PutMapping(value = "/edit-post/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UpPostResponse editPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
         upPostRequest.setPostId(postId);
         if (multipartFiles != null) {
@@ -65,37 +65,31 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
-    @DeleteMapping("/delete-post/{postId}")
+    @DeleteMapping("/{postId}")
     public DeletePostResponse deletePost(@PathVariable int postId) {
         return postService.deletePost(postId);
     }
 
-    @GetMapping("/all-posts")
-    public GetAllPostResponse getAllPosts() {
-        return postService.getAllPosts();
-    }
+//    @GetMapping("/")
+//    public GetAllPostResponse getAllPosts() {
+//        return postService.getAllPosts();
+//    }
 
-    @PostMapping("/like-post/{postId}")
+    @PostMapping("/{postId}/react")
     public ResponseEntity<?> likePost(@PathVariable int postId) {
         return new ResponseEntity<>(postService.likePost(postId),
                 HttpStatus.OK);
     }
 
-    @GetMapping("/post/users-liked/{postId}")
+    @GetMapping("/{postId}/users-liked")
     public UserLikePostResponse getListUserNameLikePost(@PathVariable int postId) {
         return postService.getUserLikePost(postId);
     }
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("/{postId}")
     public PostResponse getPostById(@PathVariable int postId) {
         return postService.findPostById(postId);
     }
-
-    @GetMapping("/new-feed")
-    public GetNewFeedResponse getNewFeed() {
-        return postService.getNewFeed();
-    }
-
 
 
 }
