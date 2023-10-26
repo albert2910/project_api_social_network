@@ -46,10 +46,12 @@ public class PostService {
 
     public UpPostResponse upPost(UpPostRequest upPostRequest) {
         UpPostResponse upPostResponse = new UpPostResponse();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
+                    .get();
             upPostRequest.setPostUserId(userInfo.getUserId());
         }
         if (upPostRequest.getPostId() != 0) {
@@ -84,12 +86,14 @@ public class PostService {
     public UpPostResponse editPost(UpPostRequest upPostRequest) {
         UpPostResponse upPostResponse = new UpPostResponse();
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(upPostRequest.getPostId(),
-                0).orElseThrow(() -> new PostNotFoundException("Post not exist!"));
+                        0)
+                .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
 
         if (userPost != null) {
             upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
             Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.getPostUserId());
-            if (userInfo.get().getUserId() == upPostRequest.getPostUserId()) {
+            if (userInfo.get()
+                    .getUserId() == upPostRequest.getPostUserId()) {
                 List<String> imagesEdit = upPostRequest.getPostUrlImages();
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
                         0);
@@ -173,49 +177,50 @@ public class PostService {
     public PostResponse findPostById(int postId) {
         PostResponse postResponse = new PostResponse();
 //        check friend
-        String currentUserName = friendService.getListFriends().getCurrentUserName();
-        List<String> listUserNameCanSeePost = friendService.getListFriends().getUserNameFriends();
+        String currentUserName = friendService.getListFriends()
+                .getCurrentUserName();
+        List<String> listUserNameCanSeePost = friendService.getListFriends()
+                .getUserNameFriends();
         listUserNameCanSeePost.add(currentUserName);
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
-                0).orElseThrow(() -> new PostNotFoundException("Post not exist!"));
-        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId()).get();
+                        0)
+                .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
+        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId())
+                .get();
         if (!listUserNameCanSeePost.contains(userPostedThePost.getUserName())) {
             postResponse.setMessage("You can not see the post because you and " + userPostedThePost.getUserName() + " are not friend!");
             postResponse.setStatus("400");
             return postResponse;
         }
-//        check post ton tai hay ko
-        if (userPost != null) {
-            PostDto postDto = postMapper.toDto(userPost);
-            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
-                    0);
-            List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
-            if (!imageList.isEmpty()) {
-                postDto.setPostImages(imageList);
-            }
-            if (!commentList.isEmpty()) {
-                postDto.setPostComments(commentList);
-            }
-            postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
-                    1));
-            postResponse.setMessage("This is post!");
-            postResponse.setStatus("200");
-            postResponse.setPostDto(postDto);
 
-        } else {
-            postResponse.setMessage("Not found this post!");
-            postResponse.setStatus("400");
+        PostDto postDto = postMapper.toDto(userPost);
+        List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
+                0);
+        List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+        if (!imageList.isEmpty()) {
+            postDto.setPostImages(imageList);
         }
+        if (!commentList.isEmpty()) {
+            postDto.setPostComments(commentList);
+        }
+        postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                1));
+        postResponse.setMessage("This is post!");
+        postResponse.setStatus("200");
+        postResponse.setPostDto(postDto);
         return postResponse;
     }
 
     public DeletePostResponse deletePost(int idPost) {
         DeletePostResponse deletePostResponse = new DeletePostResponse();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
-            UserPost userPost = userPostRepository.findById(idPost).get();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
+                    .get();
+            UserPost userPost = userPostRepository.findById(idPost)
+                    .get();
             if (userPost != null) {
                 if (userPost.getPostUserId() == userInfo.getUserId()) {
                     userPost.setPostDeleteFlag(1);
@@ -270,12 +275,15 @@ public class PostService {
         LikeRequest likeRequest = new LikeRequest();
         LikeResponse likeResponse = new LikeResponse();
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
-                0).orElseThrow(() -> new PostNotFoundException("Post not exist!"));
+                        0)
+                .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
         likeRequest.setPostId(userPost.getPostId());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
+                    .get();
             likeRequest.setUserId(userInfo.getUserId());
         }
         boolean checkLikePostIdUserId = likeRepository.existsByLikePostIdAndLikeUserId(likeRequest.getPostId(),
@@ -317,14 +325,18 @@ public class PostService {
         List<String> userNameFriends = getListFriendResponse.getUserNameFriends();
         List<PostDto> posts = new ArrayList<>();
         for (String userNameFriend : userNameFriends) {
-            UserInfo userInfo = userInfoRepository.findByUserName(userNameFriend).get();
+            UserInfo userInfo = userInfoRepository.findByUserName(userNameFriend)
+                    .get();
             List<PostDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
             posts.addAll(postsByIdUser);
         }
-        List<PostDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName()).get().getUserId());
+        List<PostDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName())
+                .get()
+                .getUserId());
         posts.addAll(myPosts);
         Collections.sort(posts,
-                Comparator.comparing(PostDto::getPostCreateDate).reversed());
+                Comparator.comparing(PostDto::getPostCreateDate)
+                        .reversed());
         getNewFeedResponse.setStatus("200");
         getNewFeedResponse.setMessage("Get new feed successful!");
         getNewFeedResponse.setPostDtos(posts);
@@ -360,18 +372,23 @@ public class PostService {
     public UserLikePostResponse getUserLikePost(int postId) {
         UserLikePostResponse userLikePostResponse = new UserLikePostResponse();
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
-                0).orElseThrow(() -> new PostNotFoundException("Post not exist!"));
+                        0)
+                .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
 //            tìm user là người đăng bài viết
-        UserInfo userPostPost = userInfoRepository.findByUserId(userPost.getPostUserId()).orElseThrow(() -> new UserNotFoundException("User not exist!"));
+        UserInfo userPostPost = userInfoRepository.findByUserId(userPost.getPostUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not exist!"));
 
 //            check quyền curentUser có được xem bài viết hay không
-        List<String> listCanSeePostsUserName = friendService.getListFriends().getUserNameFriends();
-        listCanSeePostsUserName.add(friendService.getListFriends().getCurrentUserName());
+        List<String> listCanSeePostsUserName = friendService.getListFriends()
+                .getUserNameFriends();
+        listCanSeePostsUserName.add(friendService.getListFriends()
+                .getCurrentUserName());
         if (listCanSeePostsUserName.contains(userPostPost.getUserName())) {
             List<Like> listLikeByPost = likeRepository.findLikeByLikePostId(postId);
             List<String> listUsernameLikePost = new ArrayList<>();
             for (Like like : listLikeByPost) {
-                UserInfo userInfo = userInfoRepository.findById(like.getLikeUserId()).orElseThrow(() -> new UserNotFoundException("User not exist!"));
+                UserInfo userInfo = userInfoRepository.findById(like.getLikeUserId())
+                        .orElseThrow(() -> new UserNotFoundException("User not exist!"));
                 listUsernameLikePost.add(userInfo.getUserName());
             }
             userLikePostResponse.setStatus("200");

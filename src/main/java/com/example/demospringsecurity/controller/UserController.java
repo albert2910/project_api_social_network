@@ -73,7 +73,6 @@ public class UserController {
         }
 //        String contentType = "application/octet-stream";
 //        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
-
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
 //                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
