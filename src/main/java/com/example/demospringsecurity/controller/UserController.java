@@ -41,7 +41,7 @@ public class UserController {
     @Autowired
     FileService fileService;
 
-
+//  chinh sua thong tin ca nhan
     @PostMapping(value = "/info/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file", required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
         if(multipartFile != null) {
@@ -54,6 +54,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
+//  xem ava cua cac user khac
     @GetMapping("/avatar/{idUser}")
     public ResponseEntity<?> getAvatarUser(@PathVariable(name = "idUser") int id) {
         UserInfo userInfo = userService.findUserById(id);

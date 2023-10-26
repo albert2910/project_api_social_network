@@ -35,7 +35,7 @@ public class PostController {
     @Autowired
     PostService postService;
 
-
+//  up bai post
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UpPostResponse upPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
         List<String> listImages = new ArrayList<>();
@@ -49,6 +49,7 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
+//  chinh sua bai post
     @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UpPostResponse editPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, @PathVariable int postId, UpPostRequest upPostRequest) throws IOException {
         upPostRequest.setPostId(postId);
@@ -65,6 +66,7 @@ public class PostController {
         return postService.upPost(upPostRequest);
     }
 
+//    xoa bai post
     @DeleteMapping("/{postId}")
     public DeletePostResponse deletePost(@PathVariable int postId) {
         return postService.deletePost(postId);
@@ -75,17 +77,20 @@ public class PostController {
 //        return postService.getAllPosts();
 //    }
 
+//    like va unlike bai post
     @PostMapping("/{postId}/react")
     public ResponseEntity<?> likePost(@PathVariable int postId) {
         return new ResponseEntity<>(postService.likePost(postId),
                 HttpStatus.OK);
     }
 
+//  lay ra danh sach nguoi like bai post
     @GetMapping("/{postId}/users-liked")
     public UserLikePostResponse getListUserNameLikePost(@PathVariable int postId) {
         return postService.getUserLikePost(postId);
     }
 
+//    tim kiem bai post theo id
     @GetMapping("/{postId}")
     public PostResponse getPostById(@PathVariable int postId) {
         return postService.findPostById(postId);
