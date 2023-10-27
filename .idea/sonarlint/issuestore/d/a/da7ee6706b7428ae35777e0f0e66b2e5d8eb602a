@@ -1,28 +1,25 @@
 
-s
-java:S1192¥"UDefine a constant instead of duplicating this literal "Not found this post!" 4 times.(“‚²³8ÌÛÔµ1
-Z
-java:S3655Ø"7Call "Optional#isPresent()" before accessing the value.(°¨À®ùÿÿÿÿ8¦ÜÔµ1
-Z
-java:S3655³"7Call "Optional#isPresent()" before accessing the value.(ÙœØ†ÿÿÿÿÿ8§ÜÔµ1
-T
-java:S3655×"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜÔµ1
-Z
-java:S3655Ã"7Call "Optional#isPresent()" before accessing the value.(ÆÜìùÿÿÿÿ8§ÜÔµ1
+r
+java:S1192Z"PDefine a constant instead of duplicating this literal "Post not exist!" 4 times.(¿şÂøÿÿÿÿ8‡¤ÅØ¶1
 U
-java:S3655Ç"7Call "Optional#isPresent()" before accessing the value.(å·áğ8§ÜÔµ1
-T
-java:S3655™"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜÔµ1
-T
-java:S3655Z"7Call "userInfo.isPresent()" before accessing the value.(Î„©â8¦ÜÔµ1
+java:S3655Ş"7Call "Optional#isPresent()" before accessing the value.(½Ø”Æ8¨¤ÅØ¶1
+U
+java:S3655È"7Call "Optional#isPresent()" before accessing the value.(É®Šã8¨¤ÅØ¶1
 S
-java:S36552"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8§ÜÔµ1
+java:S3655_"7Call "userInfo.isPresent()" before accessing the value.(Ê£À+8¨¤ÅØ¶1
+U
+java:S3655Í"7Call "Optional#isPresent()" before accessing the value.(×™Ë8¨¤ÅØ¶1
+Y
+java:S36555"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8¨¤ÅØ¶1
 Z
-java:S3655ó"7Call "Optional#isPresent()" before accessing the value.(÷¿¦„úÿÿÿÿ8¦ÜÔµ1
-`
-java:S2583º"CChange this condition so that it does not always evaluate to "true"(âœƒn8§ÜÔµ1
+java:S3655"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8¨¤ÅØ¶1
+Z
+java:S3655Ü"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8¨¤ÅØ¶1
+U
+java:S3655¼"7Call "Optional#isPresent()" before accessing the value.(ËÊºú8ÌÀÅØ¶1
 o
-java:S3776R"RRefactor this method to reduce its Cognitive Complexity from 37 to the 15 allowed.(‡½Î•8®ÜÔµ1
-]	java:S125_"<This block of commented-out lines of code should be removed.(Ä…’Çøÿÿÿÿ8†ö Ôµ1
-G	java:S106x"+Replace this use of System.out by a logger.(Š¶Œ¬8±ÜÔµ1
-H	java:S106Î"+Replace this use of System.out by a logger.(çİ×³8Ò Ôµ1
+java:S3776V"RRefactor this method to reduce its Cognitive Complexity from 37 to the 15 allowed.(‡½Î•8¯¤ÅØ¶1
+]	java:S125e"<This block of commented-out lines of code should be removed.(Ä…’Çøÿÿÿÿ8²¤ÅØ¶1
+G	java:S106~"+Replace this use of System.out by a logger.(Š¶Œ¬8²¤ÅØ¶1
+^	java:S125ù"<This block of commented-out lines of code should be removed.(Àá¨šùÿÿÿÿ8º¤ÅØ¶1
+H	java:S106×"+Replace this use of System.out by a logger.(çİ×³8¾¤ÅØ¶1

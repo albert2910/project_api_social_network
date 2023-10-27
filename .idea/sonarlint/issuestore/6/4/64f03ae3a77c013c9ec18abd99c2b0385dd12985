@@ -1,6 +1,24 @@
 
-B
-java:S1452n"&Remove usage of generic wildcard type.(¬ìÖ%8ôîƒ¶1
-X	java:S125}"<This block of commented-out lines of code should be removed.(³†ÖÃ8ôîƒ¶1
+H
+java:S1452;"&Remove usage of generic wildcard type.(Òòí‘ıÿÿÿÿ8ôîƒ¶1
+X	java:S125J"<This block of commented-out lines of code should be removed.(³†ÖÃ8ôîƒ¶1
+p
+java:S1128"NRemove this unused import 'com.example.demospringsecurity.service.JwtService'.(—üİøÿÿÿÿ8à€ÏÑ¶1
+p
+java:S1128"NRemove this unused import 'com.example.demospringsecurity.service.OtpService'.(‰»“­ùÿÿÿÿ8á€ÏÑ¶1
+g
+java:S1128"ERemove this unused import 'jakarta.servlet.http.HttpServletResponse'.(ÂÓÕÇÿÿÿÿÿ8®°ÍÑ¶1
 e
 java:S1128"CRemove this unused import 'jakarta.validation.constraints.NotNull'.(Àª•ıÿÿÿÿ8¡¢õƒ¶1
+€
+java:S1128"^Remove this unused import 'org.springframework.security.authentication.AuthenticationManager'.(ğş–şÿÿÿÿ8á€ÏÑ¶1
+‚
+java:S1128"`Remove this unused import 'org.springframework.security.authentication.BadCredentialsException'.(Òòîƒÿÿÿÿÿ8Œ¼¨Ğ¶1
+
+java:S1128"lRemove this unused import 'org.springframework.security.authentication.UsernamePasswordAuthenticationToken'.(ÖÆ„Ùüÿÿÿÿ8Œ¼¨Ğ¶1
+j
+java:S1128"MRemove this unused import 'org.springframework.security.core.Authentication'.(ñıÓ“8Œ¼¨Ğ¶1
+s
+java:S1128"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8Œ¼¨Ğ¶1
+{
+java:S1128"YRemove this unused import 'org.springframework.security.crypto.password.PasswordEncoder'.(‰¡ßáÿÿÿÿÿ8á€ÏÑ¶1

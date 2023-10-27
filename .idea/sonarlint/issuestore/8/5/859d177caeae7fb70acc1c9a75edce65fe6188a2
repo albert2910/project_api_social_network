@@ -1,13 +1,11 @@
 
 l
-java:S1192V"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8Ä›ª†¶1
-^
-java:S4973{"<Strings and Boxed types should be compared using "equals()".(â¸÷°øÿÿÿÿ8Æ›ª†¶1
-Y
-java:S3655i"7Call "userInfo.isPresent()" before accessing the value.(€½ëúøÿÿÿÿ8œª†¶1
-T
-java:S3655ò"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8œª†¶1
+java:S1192W"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8ûÆÛÏ¶1
 U
-java:S3655·"7Call "userInfo.isPresent()" before accessing the value.(…¦•Ë8œª†¶1
+java:S3655«"7Call "userInfo.isPresent()" before accessing the value.(…¦•Ë8àÇÛÏ¶1
+T
+java:S3655æ"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8àÇÛÏ¶1
+Y
+java:S3655k"7Call "userInfo.isPresent()" before accessing the value.(€½ëúøÿÿÿÿ8àÇÛÏ¶1
 p
-java:S3776±"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(úöìµ8›œª†¶1
+java:S3776¥"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(úöìµ8îÇÛÏ¶1
