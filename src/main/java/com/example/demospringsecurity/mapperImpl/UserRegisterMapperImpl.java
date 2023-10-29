@@ -1,7 +1,7 @@
-package com.example.demospringsecurity.mapper;
+package com.example.demospringsecurity.mapperImpl;
 
 import com.example.demospringsecurity.dto.request.RegisterRequest;
-import com.example.demospringsecurity.mapperImpl.UserMapper;
+import com.example.demospringsecurity.mapper.UserMapper;
 import com.example.demospringsecurity.model.UserInfo;
 import org.springframework.stereotype.Component;
 

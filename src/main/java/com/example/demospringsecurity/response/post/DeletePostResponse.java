@@ -1,5 +1,6 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.post;
 
+import com.example.demospringsecurity.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class DeletePostResponse {
     private String status;
-    private String userName;
-    private String otp;
     private String message;
+    private int idPostDelete;
 }

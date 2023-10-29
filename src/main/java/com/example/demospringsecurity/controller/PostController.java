@@ -1,16 +1,14 @@
 package com.example.demospringsecurity.controller;
 
-import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
-import com.example.demospringsecurity.model.Image;
-import com.example.demospringsecurity.response.*;
+import com.example.demospringsecurity.response.post.*;
+import com.example.demospringsecurity.response.uploadfile.FileUploadResponse;
 import com.example.demospringsecurity.service.FileService;
 import com.example.demospringsecurity.service.PostService;
 import com.example.demospringsecurity.validator.ValidMultipleFile;
 import com.example.demospringsecurity.validator.ValidSizeMultipleFile;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -37,7 +32,7 @@ public class PostController {
 
 //  up bai post
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UpPostResponse upPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
+    public ResponseEntity<UpPostResponse> upPost(@RequestPart(value = "files", required = false) @Valid @ValidMultipleFile @ValidSizeMultipleFile MultipartFile[] multipartFiles, UpPostRequest upPostRequest) throws IOException {
         List<String> listImages = new ArrayList<>();
         if (multipartFiles != null) {
             for (MultipartFile multipartFile : multipartFiles) {
@@ -46,7 +41,7 @@ public class PostController {
             }
         }
         upPostRequest.setPostUrlImages(listImages);
-        return postService.upPost(upPostRequest);
+        return new ResponseEntity<>(postService.upPost(upPostRequest), HttpStatus.OK);
     }
 
 //  chinh sua bai post
@@ -94,6 +89,12 @@ public class PostController {
     @GetMapping("/{postId}")
     public PostResponse getPostById(@PathVariable int postId) {
         return postService.findPostById(postId);
+    }
+
+//    xem cac bai viet da dang cua ban than
+    @GetMapping("/me")
+    public ResponseEntity<GetMyPostsResponse> getMyPosts() {
+        return new ResponseEntity<>(postService.getMyPosts(),HttpStatus.OK);
     }
 
 

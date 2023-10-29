@@ -1,7 +1,7 @@
-package com.example.demospringsecurity.mapper;
+package com.example.demospringsecurity.mapperImpl;
 
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
-import com.example.demospringsecurity.mapperImpl.UserChangeInfoMapper;
+import com.example.demospringsecurity.mapper.UserChangeInfoMapper;
 import com.example.demospringsecurity.model.UserInfo;
 import org.springframework.stereotype.Component;
 

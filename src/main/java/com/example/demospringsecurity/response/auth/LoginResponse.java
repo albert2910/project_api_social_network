@@ -1,15 +1,15 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.auth;
 
-import com.example.demospringsecurity.model.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class CommentResponse {
+public class LoginResponse {
     private String status;
+    private String userName;
+    private String otp;
     private String message;
-    private Comment comment;
 }

@@ -1,14 +1,10 @@
-package com.example.demospringsecurity.mapper;
+package com.example.demospringsecurity.mapperImpl;
 
 import com.example.demospringsecurity.dto.PostDto;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
-import com.example.demospringsecurity.mapperImpl.PostMapper;
-import com.example.demospringsecurity.model.Image;
+import com.example.demospringsecurity.mapper.PostMapper;
 import com.example.demospringsecurity.model.UserPost;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class PostMapperImpl implements PostMapper {

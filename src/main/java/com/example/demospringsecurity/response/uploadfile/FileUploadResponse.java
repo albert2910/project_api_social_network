@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.uploadfile;
 
 import lombok.*;
 

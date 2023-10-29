@@ -5,10 +5,12 @@ import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.exceptions.PostNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
-import com.example.demospringsecurity.mapperImpl.PostMapper;
+import com.example.demospringsecurity.mapper.PostMapper;
 import com.example.demospringsecurity.model.*;
 import com.example.demospringsecurity.repository.*;
-import com.example.demospringsecurity.response.*;
+import com.example.demospringsecurity.response.friend.GetListFriendResponse;
+import com.example.demospringsecurity.response.like.LikeResponse;
+import com.example.demospringsecurity.response.post.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -367,6 +369,25 @@ public class PostService {
         }
         return postDtos;
     }
+
+    //  xem cac bai viet cua ban than dang
+    public GetMyPostsResponse getMyPosts() {
+        GetMyPostsResponse getMyPostsResponse = new GetMyPostsResponse();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + authentication.getName())));
+            getMyPostsResponse.setUserId(userInfo.get().getUserId());
+        }
+        List<PostDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
+        Collections.sort(myPosts,
+                Comparator.comparing(PostDto::getPostCreateDate)
+                        .reversed());
+        getMyPostsResponse.setMyPosts(myPosts);
+        getMyPostsResponse.setMessage("Success!");
+        getMyPostsResponse.setStatus(200);
+        return getMyPostsResponse;
+    }
+
 
     //    lay ra danh sach nguoi like bai post
     public UserLikePostResponse getUserLikePost(int postId) {

@@ -1,6 +1,6 @@
 package com.example.demospringsecurity.config;
 
-import com.example.demospringsecurity.response.UnauthorizedResponse;
+import com.example.demospringsecurity.response.auth.UnauthorizedResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

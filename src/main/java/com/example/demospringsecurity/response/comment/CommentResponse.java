@@ -1,15 +1,15 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.comment;
 
-import com.example.demospringsecurity.dto.PostDto;
+import com.example.demospringsecurity.model.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeletePostResponse {
+@Data
+public class CommentResponse {
     private String status;
     private String message;
-    private int idPostDelete;
+    private Comment comment;
 }

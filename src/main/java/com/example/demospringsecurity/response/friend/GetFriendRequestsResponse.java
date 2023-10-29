@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.friend;
 
 import com.example.demospringsecurity.model.Friend;
 import lombok.AllArgsConstructor;

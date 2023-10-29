@@ -28,6 +28,6 @@ public class RegisterRequest {
     @NotBlank(message = "Invalid password: Empty password")
     @NotNull(message = "Invalid password: Password is NULL")
     // Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$", message = "Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,100}$", message = "Minimum eight, at least one uppercase letter, one lowercase letter, one number and one special character")
     private String userPassword;
 }

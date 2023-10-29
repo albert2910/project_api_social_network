@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.mapperImpl;
+package com.example.demospringsecurity.mapper;
 
 import com.example.demospringsecurity.dto.PostDto;
 import com.example.demospringsecurity.dto.request.UpPostRequest;

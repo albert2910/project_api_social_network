@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.post;
 
 import com.example.demospringsecurity.dto.PostDto;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpPostResponse {
-    private String status;
+public class PostResponse {
     private String message;
+    private String status;
     private PostDto postDto;
 }

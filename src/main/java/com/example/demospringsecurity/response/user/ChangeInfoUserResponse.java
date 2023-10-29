@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.user;
 
 import com.example.demospringsecurity.model.UserInfo;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterResponse {
+public class ChangeInfoUserResponse {
+    private String status;
     private String message;
-    private boolean isSuccess;
-    private UserInfo userInfo;
+    private UserInfo userInfoUpdate;
 }

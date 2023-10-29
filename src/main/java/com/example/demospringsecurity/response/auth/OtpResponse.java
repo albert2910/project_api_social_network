@@ -1,6 +1,5 @@
-package com.example.demospringsecurity.response;
+package com.example.demospringsecurity.response.auth;
 
-import com.example.demospringsecurity.model.Friend;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FriendResponse {
+public class OtpResponse {
     private String status;
     private String message;
-    private Friend friend;
+    private String token;
 }

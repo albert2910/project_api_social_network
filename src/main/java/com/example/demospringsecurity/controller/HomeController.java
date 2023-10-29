@@ -1,6 +1,6 @@
 package com.example.demospringsecurity.controller;
 
-import com.example.demospringsecurity.response.GetNewFeedResponse;
+import com.example.demospringsecurity.response.post.GetNewFeedResponse;
 import com.example.demospringsecurity.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,4 +18,5 @@ public class HomeController {
     public GetNewFeedResponse getNewFeed() {
         return postService.getNewFeed();
     }
+
 }

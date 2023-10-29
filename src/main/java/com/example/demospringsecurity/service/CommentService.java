@@ -1,11 +1,14 @@
 package com.example.demospringsecurity.service;
 
 import com.example.demospringsecurity.dto.request.CommentRequest;
+import com.example.demospringsecurity.exceptions.PostNotFoundException;
 import com.example.demospringsecurity.model.Comment;
 import com.example.demospringsecurity.model.UserInfo;
+import com.example.demospringsecurity.model.UserPost;
 import com.example.demospringsecurity.repository.CommentRepository;
 import com.example.demospringsecurity.repository.UserInfoRepository;
-import com.example.demospringsecurity.response.CommentResponse;
+import com.example.demospringsecurity.repository.UserPostRepository;
+import com.example.demospringsecurity.response.comment.CommentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,12 +17,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
 public class CommentService {
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    UserPostRepository userPostRepository;
+
+    @Autowired
+    FriendService friendService;
 
     @Autowired
     UserInfoRepository userInfoRepository;
@@ -31,6 +41,26 @@ public class CommentService {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
             commentRequest.setCommentUserId(userInfo.getUserId());
+        }
+        if(!userInfoRepository.existsById(commentRequest.getCommentPostId())) {
+            throw new PostNotFoundException("Not found post has postId: "+ commentRequest.getCommentPostId());
+        }
+        //        check friend
+        String currentUserName = friendService.getListFriends()
+                .getCurrentUserName();
+        List<String> listUserNameCanSeePost = friendService.getListFriends()
+                .getUserNameFriends();
+        listUserNameCanSeePost.add(currentUserName);
+        UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(commentRequest.getCommentPostId(),
+                        0)
+                .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
+        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId())
+                .get();
+        if (!listUserNameCanSeePost.contains(userPostedThePost.getUserName())) {
+            commentResponse.setComment(null);
+            commentResponse.setStatus("400");
+            commentResponse.setMessage("You can not comment the post because you and " + userPostedThePost.getUserName() + " are not friend!");
+
         }
         if (commentRequest.getCommentId() != 0) {
             return editComment(commentRequest);

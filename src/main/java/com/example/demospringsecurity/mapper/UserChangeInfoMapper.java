@@ -1,4 +1,4 @@
-package com.example.demospringsecurity.mapperImpl;
+package com.example.demospringsecurity.mapper;
 
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.model.UserInfo;

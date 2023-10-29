@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(type = "object", example = "{\n" +
+        "  \"newPassword\": \"string\",\n" +
+        "  \"tokenReset\": \"string\"\n" +
+        "}")
 public class AuthChangePassword {
     @NotBlank(message = "Invalid newPassword: Empty newPassword")
     @NotNull(message = "Invalid newPassword: newPassword is NULL")

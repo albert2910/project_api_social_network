@@ -1,9 +1,8 @@
 package com.example.demospringsecurity.controller;
 
-import com.example.demospringsecurity.dto.request.FriendRequest;
-import com.example.demospringsecurity.response.FriendResponse;
-import com.example.demospringsecurity.response.GetFriendRequestsResponse;
-import com.example.demospringsecurity.response.GetListFriendResponse;
+import com.example.demospringsecurity.response.friend.FriendResponse;
+import com.example.demospringsecurity.response.friend.GetFriendRequestsResponse;
+import com.example.demospringsecurity.response.friend.GetListFriendResponse;
 import com.example.demospringsecurity.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

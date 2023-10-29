@@ -1,9 +1,7 @@
 package com.example.demospringsecurity.service;
 
-import com.example.demospringsecurity.repository.UserInfoRepository;
-import com.example.demospringsecurity.response.FileUploadResponse;
+import com.example.demospringsecurity.response.uploadfile.FileUploadResponse;
 import com.example.demospringsecurity.util.FileUploadUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

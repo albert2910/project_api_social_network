@@ -18,6 +18,6 @@ public class AuthRequest {
 
     @NotBlank(message = "Invalid password: Empty password")
     @NotNull(message = "Invalid password: Password is NULL")
-    @Size(min = 8, max = 10, message = "Invalid password: Minimum eight and maximum 10 characters")
+    @Size(min = 8, message = "Invalid password: Minimum eight and maximum 10 characters")
     private String password;
 }

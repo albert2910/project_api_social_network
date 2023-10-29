@@ -4,7 +4,7 @@ import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.AuthOtpRequest;
 import com.example.demospringsecurity.dto.request.AuthRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
-import com.example.demospringsecurity.response.*;
+import com.example.demospringsecurity.response.auth.*;
 import com.example.demospringsecurity.service.OtpService;
 import com.example.demospringsecurity.service.UserService;
 import jakarta.validation.Valid;
@@ -32,8 +32,8 @@ public class AuthController {
     @Autowired
     OtpService otpService;
     @PostMapping("/signup")
-    public RegisterResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        return userService.registerUser(registerRequest);
+    public ResponseEntity<RegisterResponse> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
+        return new ResponseEntity<>(userService.registerUser(registerRequest), HttpStatus.OK);
     }
 
     @PostMapping("/sign-in")
@@ -58,9 +58,9 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public OtpResponse authenticateAndGetToken(@RequestBody @Valid AuthOtpRequest authOtpRequest) {
-        return otpService.verifyOtp(authOtpRequest.getUserName(),
-                authOtpRequest.getOtp());
+    public ResponseEntity<OtpResponse> authenticateAndGetToken(@RequestBody @Valid AuthOtpRequest authOtpRequest) {
+        return new ResponseEntity<>(otpService.verifyOtp(authOtpRequest.getUserName(),
+                authOtpRequest.getOtp()), HttpStatus.OK);
     }
 
     @PostMapping("/forgot-password")

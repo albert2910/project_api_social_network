@@ -1,7 +1,7 @@
 package com.example.demospringsecurity.controller;
 
 import com.example.demospringsecurity.dto.request.CommentRequest;
-import com.example.demospringsecurity.response.CommentResponse;
+import com.example.demospringsecurity.response.comment.CommentResponse;
 import com.example.demospringsecurity.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
