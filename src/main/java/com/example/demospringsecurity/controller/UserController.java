@@ -33,7 +33,7 @@ public class UserController {
     FileService fileService;
 
 //  chinh sua thong tin ca nhan
-    @PostMapping(value = "/info/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/info/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file", required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
         if(multipartFile != null) {
             FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
@@ -69,6 +69,7 @@ public class UserController {
 //                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource);
     }
+
 
 
 }

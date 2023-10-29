@@ -68,7 +68,7 @@ public class AuthController {
         return userService.forgotPassword(username);
     }
 
-    @PostMapping("/change-password")
+    @PatchMapping("/change-password")
     public PasswordChangeResponse changePassword(@RequestBody @Valid AuthChangePassword authChangePassword) {
         return userService.changePassword(authChangePassword);
     }

@@ -87,8 +87,8 @@ public class PostController {
 
 //    tim kiem bai post theo id
     @GetMapping("/{postId}")
-    public PostResponse getPostById(@PathVariable int postId) {
-        return postService.findPostById(postId);
+    public PostResponse getPostById(@PathVariable int postId, @RequestParam(value = "offset", defaultValue = "0", required = false) int page, @RequestParam(value = "limit", defaultValue = "3", required = false) int size) {
+        return postService.findPostById(postId, page, size);
     }
 
 //    xem cac bai viet da dang cua ban than

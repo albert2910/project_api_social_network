@@ -1,17 +1,23 @@
 package com.example.demospringsecurity.service;
 
 import com.example.demospringsecurity.dto.PostDto;
+import com.example.demospringsecurity.dto.PostViewDto;
 import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.exceptions.PostNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapper.PostMapper;
+import com.example.demospringsecurity.mapper.PostViewMapper;
 import com.example.demospringsecurity.model.*;
 import com.example.demospringsecurity.repository.*;
 import com.example.demospringsecurity.response.friend.GetListFriendResponse;
 import com.example.demospringsecurity.response.like.LikeResponse;
 import com.example.demospringsecurity.response.post.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +32,9 @@ import java.util.*;
 public class PostService {
     @Autowired
     PostMapper postMapper;
+
+    @Autowired
+    PostViewMapper postViewMapper;
 
     @Autowired
     UserPostRepository userPostRepository;
@@ -74,10 +83,10 @@ public class PostService {
                 Image imageSaved = imageRepository.save(image);
                 imageList.add(imageSaved);
             }
-            PostDto postDto = postMapper.toDto(userPostSaved);
-            postDto.setPostImages(imageList);
+            PostViewDto postViewDto = postViewMapper.toDto(userPostSaved);
+            postViewDto.setPostImages(imageList);
 
-            upPostResponse.setPostDto(postDto);
+            upPostResponse.setPostViewDto(postViewDto);
             upPostResponse.setStatus("200");
             upPostResponse.setMessage("Up post success!");
         }
@@ -100,28 +109,6 @@ public class PostService {
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
                         0);
                 List<Image> imagesEdited = new ArrayList<>();
-//                if(!upPostRequest.isDeleteImages() && imagesEdit == null) {
-//                    imagesEdited = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
-//                            0);
-//                } else {
-//                    if (!imageList.isEmpty()) {
-//                        for (Image image : imageList) {
-//                            System.out.println(image.getImageUrl());
-//                            image.setImageFlagDelete(1);
-//                            imageRepository.save(image);
-//                        }
-//                    }
-//                    if (!imagesEdit.isEmpty()) {
-//                        for (String s : imagesEdit) {
-//                            Image image = new Image();
-//                            image.setImageUrl(s);
-//                            image.setImagePostId(upPostRequest.getPostId());
-//                            image.setImageFlagDelete(0);
-//                            Image imageSaved = imageRepository.save(image);
-//                            imagesEdited.add(imageSaved);
-//                        }
-//                    }
-//                }
                 if (imagesEdit != null) {
                     if (!imageList.isEmpty()) {
                         for (Image image : imageList) {
@@ -154,14 +141,14 @@ public class PostService {
                 UserPost userPost1 = postMapper.toEntity(upPostRequest);
                 userPost1.setPostDeleteFlag(0);
                 UserPost userPostEdited = userPostRepository.save(userPost1);
-                PostDto postDto = postMapper.toDto(userPostEdited);
-                List<Comment> commentList = commentRepository.findCommentByCommentPostId(postDto.getPostId());
-                postDto.setPostComments(commentList);
-                int likePost = likeRepository.countLikeByLikePostIdAndLikeFlag(postDto.getPostId(),
+                PostViewDto postViewDto = postViewMapper.toDto(userPostEdited);
+                int comments= commentRepository.countCommentsByCommentPostId(postViewDto.getPostId());
+                postViewDto.setComments(comments);
+                int likePost = likeRepository.countLikeByLikePostIdAndLikeFlag(postViewDto.getPostId(),
                         1);
-                postDto.setLike(likePost);
-                postDto.setPostImages(imagesEdited);
-                upPostResponse.setPostDto(postDto);
+                postViewDto.setLike(likePost);
+                postViewDto.setPostImages(imagesEdited);
+                upPostResponse.setPostViewDto(postViewDto);
                 upPostResponse.setMessage("Edit this post successfully!");
                 upPostResponse.setStatus("200");
 
@@ -176,7 +163,7 @@ public class PostService {
         return upPostResponse;
     }
 
-    public PostResponse findPostById(int postId) {
+    public PostResponse findPostById(int postId, int page, int size) {
         PostResponse postResponse = new PostResponse();
 //        check friend
         String currentUserName = friendService.getListFriends()
@@ -198,7 +185,9 @@ public class PostService {
         PostDto postDto = postMapper.toDto(userPost);
         List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
                 0);
-        List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+
+        Pageable pageable = PageRequest.of(page,size, Sort.by("commentCreateDate").descending());
+        Page<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId(),pageable);
         if (!imageList.isEmpty()) {
             postDto.setPostImages(imageList);
         }
@@ -325,49 +314,47 @@ public class PostService {
         GetNewFeedResponse getNewFeedResponse = new GetNewFeedResponse();
         GetListFriendResponse getListFriendResponse = friendService.getListFriends();
         List<String> userNameFriends = getListFriendResponse.getUserNameFriends();
-        List<PostDto> posts = new ArrayList<>();
+        List<PostViewDto> posts = new ArrayList<>();
         for (String userNameFriend : userNameFriends) {
             UserInfo userInfo = userInfoRepository.findByUserName(userNameFriend)
                     .get();
-            List<PostDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
+            List<PostViewDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
             posts.addAll(postsByIdUser);
         }
-        List<PostDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName())
+        List<PostViewDto> myPosts = getAllPostsByUserId(userInfoRepository.findByUserName(getListFriendResponse.getCurrentUserName())
                 .get()
                 .getUserId());
         posts.addAll(myPosts);
         Collections.sort(posts,
-                Comparator.comparing(PostDto::getPostCreateDate)
+                Comparator.comparing(PostViewDto::getPostCreateDate)
                         .reversed());
         getNewFeedResponse.setStatus("200");
         getNewFeedResponse.setMessage("Get new feed successful!");
-        getNewFeedResponse.setPostDtos(posts);
+        getNewFeedResponse.setPostViewDtos(posts);
         System.out.println(posts.size());
         return getNewFeedResponse;
     }
 
-    public List<PostDto> getAllPostsByUserId(int userId) {
+    public List<PostViewDto> getAllPostsByUserId(int userId) {
         List<UserPost> userPostList = userPostRepository.findUserPostsByPostUserIdAndAndPostDeleteFlag(userId,
                 0);
-        List<PostDto> postDtos = new ArrayList<>();
+        List<PostViewDto> postViewDtos = new ArrayList<>();
         if (!userPostList.isEmpty()) {
             for (UserPost userPost : userPostList) {
-                PostDto postDto = postMapper.toDto(userPost);
+                PostViewDto postViewDto = postViewMapper.toDto(userPost);
                 List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
                         0);
-                List<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId());
+                int comments = commentRepository.countCommentsByCommentPostId(userPost.getPostId());
                 if (!imageList.isEmpty()) {
-                    postDto.setPostImages(imageList);
+                    postViewDto.setPostImages(imageList);
                 }
-                if (!commentList.isEmpty()) {
-                    postDto.setPostComments(commentList);
-                }
-                postDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
+                postViewDto.setComments(comments);
+                postViewDto.setLike(likeRepository.countLikeByLikePostIdAndLikeFlag(userPost.getPostId(),
                         1));
-                postDtos.add(postDto);
+                postViewDtos.add(postViewDto);
             }
         }
-        return postDtos;
+        return postViewDtos;
     }
 
     //  xem cac bai viet cua ban than dang
@@ -378,9 +365,9 @@ public class PostService {
             Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + authentication.getName())));
             getMyPostsResponse.setUserId(userInfo.get().getUserId());
         }
-        List<PostDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
+        List<PostViewDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
         Collections.sort(myPosts,
-                Comparator.comparing(PostDto::getPostCreateDate)
+                Comparator.comparing(PostViewDto::getPostCreateDate)
                         .reversed());
         getMyPostsResponse.setMyPosts(myPosts);
         getMyPostsResponse.setMessage("Success!");

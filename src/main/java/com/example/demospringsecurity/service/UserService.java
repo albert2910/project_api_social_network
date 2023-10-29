@@ -141,16 +141,8 @@ public class UserService {
             Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserId(passwordResetToken.get()
                             .getUserId())
                     .orElseThrow(() -> new UserNotFoundException("Not found user!")));
-            UserInfo userInfoChangePassword = new UserInfo();
-            userInfoChangePassword.setUserId(userInfo.get()
-                    .getUserId());
-            userInfoChangePassword.setUserEmail(userInfo.get()
-                    .getUserEmail());
-            userInfoChangePassword.setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
-            userInfoChangePassword.setUserName(userInfo.get()
-                    .getUserName());
-            userInfoChangePassword.setRoles("ROLE_USER");
-            userInfoRepository.save(userInfoChangePassword);
+            userInfo.get().setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
+            userInfoRepository.save(userInfo.get());
             passwordChangeResponse.setStatus("200");
             passwordChangeResponse.setMessage("Reset password success!");
         }
@@ -190,23 +182,19 @@ public class UserService {
             changeInfoUserRequest.setUserId(userInfo.get()
                     .getUserId());
             UserInfo userInfoUpdate = userChangeInfoMapper.toEntity(changeInfoUserRequest);
-            if (changeInfoUserRequest.getUserName() == null || changeInfoUserRequest.getUserName()
-                    .isEmpty()) {
+            if (changeInfoUserRequest.getUserName() == null) {
                 userInfoUpdate.setUserName(userInfo.get()
                         .getUserName());
             }
-            if (changeInfoUserRequest.getUserFullName() == null || changeInfoUserRequest.getUserFullName()
-                    .isEmpty()) {
+            if (changeInfoUserRequest.getUserFullName() == null) {
                 userInfoUpdate.setUserFullName(userInfo.get()
                         .getUserFullName());
             }
-            if (changeInfoUserRequest.getUserAvatar() == null || changeInfoUserRequest.getUserAvatar()
-                    .isEmpty()) {
+            if (changeInfoUserRequest.getUserAvatar() == null) {
                 userInfoUpdate.setUserAvatar(userInfo.get()
                         .getUserAvatar());
             }
-            if (changeInfoUserRequest.getUserEmail() == null || changeInfoUserRequest.getUserEmail()
-                    .isEmpty()) {
+            if (changeInfoUserRequest.getUserEmail() == null) {
                 userInfoUpdate.setUserEmail(userInfo.get()
                         .getUserEmail());
             }
@@ -214,8 +202,7 @@ public class UserService {
                 userInfoUpdate.setUserBirthDate(userInfo.get()
                         .getUserBirthDate());
             }
-            if (changeInfoUserRequest.getUserAddress() == null || changeInfoUserRequest.getUserAddress()
-                    .isEmpty()) {
+            if (changeInfoUserRequest.getUserAddress() == null) {
                 userInfoUpdate.setUserAddress(userInfo.get()
                         .getUserAddress());
             }
@@ -226,9 +213,6 @@ public class UserService {
             changeInfoUserResponse.setStatus("200");
             changeInfoUserResponse.setMessage("Update success");
             changeInfoUserResponse.setUserInfoUpdate(userInfoUpdate);
-        } else {
-            changeInfoUserResponse.setStatus("400");
-            changeInfoUserResponse.setMessage("Token is invalid!");
         }
         return changeInfoUserResponse;
     }

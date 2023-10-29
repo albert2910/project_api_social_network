@@ -41,7 +41,7 @@ public class CommentService {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
             commentRequest.setCommentUserId(userInfo.getUserId());
-        }
+        } else return commentResponse;
         if(!userInfoRepository.existsById(commentRequest.getCommentPostId())) {
             throw new PostNotFoundException("Not found post has postId: "+ commentRequest.getCommentPostId());
         }
@@ -60,7 +60,7 @@ public class CommentService {
             commentResponse.setComment(null);
             commentResponse.setStatus("400");
             commentResponse.setMessage("You can not comment the post because you and " + userPostedThePost.getUserName() + " are not friend!");
-
+            return commentResponse;
         }
         if (commentRequest.getCommentId() != 0) {
             return editComment(commentRequest);
@@ -118,11 +118,6 @@ public class CommentService {
                 commentResponse.setMessage("You do not have permission to delete this comment!");
                 commentResponse.setComment(comment);
             }
-
-        } else {
-            commentResponse.setStatus("400");
-            commentResponse.setMessage("Your account has expired!");
-            commentResponse.setComment(null);
         }
         return commentResponse;
     }
