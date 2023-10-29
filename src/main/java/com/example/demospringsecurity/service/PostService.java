@@ -407,8 +407,6 @@ public class PostService {
             userLikePostResponse.setMessage("You can not see this post!");
             userLikePostResponse.setUserNamesLikePost(null);
         }
-
-
         return userLikePostResponse;
     }
 

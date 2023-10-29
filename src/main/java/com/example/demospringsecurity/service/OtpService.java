@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.UserInfoRepository;
 import com.example.demospringsecurity.response.auth.OtpResponse;
@@ -22,18 +23,13 @@ public class OtpService {
     JwtService jwtService;
 
     public String sendOtp(String username) {
-        UserInfo userInfo = userInfoRepository.findByUserName(username).get();
-        if(userInfo != null) {
-            userInfo.setUserOtp(generateOTP());
-            LocalDateTime dateCreateOtp = java.time.LocalDateTime.now();
-            userInfo.setUserTimeCreateOtp(dateCreateOtp);
-            System.out.println(userInfo.getUserTimeCreateOtp());
-            userInfoRepository.save(userInfo);
-            return userInfo.getUserOtp();
-        } else {
-            return null;
-        }
-
+        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user userName: " + username));
+        userInfo.setUserOtp(generateOTP());
+        LocalDateTime dateCreateOtp = java.time.LocalDateTime.now();
+        userInfo.setUserTimeCreateOtp(dateCreateOtp);
+        System.out.println(userInfo.getUserTimeCreateOtp());
+        userInfoRepository.save(userInfo);
+        return userInfo.getUserOtp();
     }
 
     public String generateOTP() {
@@ -46,12 +42,11 @@ public class OtpService {
         // to store the OTP
         char[] OTP = new char[6];
         String otp = "";
-        for(int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
             // Use of charAt() method to get character value
             // Use of nextInt() as it is scanning the value as int
-            OTP [i] = numbers.charAt(rdm_method.nextInt(numbers.length()));
-            otp += OTP [i];
+            OTP[i] = numbers.charAt(rdm_method.nextInt(numbers.length()));
+            otp += OTP[i];
         }
 
         System.out.println(otp);
@@ -60,13 +55,10 @@ public class OtpService {
 
 
     public OtpResponse verifyOtp(String username, String otp) {
-        UserInfo userInfo = userInfoRepository.findByUserName(username).get();
+        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user userName: "+username));
         OtpResponse otpResponse = new OtpResponse();
-        if (userInfo == null) {
-            otpResponse.setStatus("400");
-            otpResponse.setMessage("Not found user!");
-        } else if (userInfo.getUserOtp() == null) {
-            otpResponse.setMessage("OTP otp has expired ");
+        if (userInfo.getUserOtp() == null) {
+            otpResponse.setMessage("OTP otp has expired!");
             otpResponse.setStatus("406");
         } else if (checkTimeOtp(userInfo)) {
             if (otp.equals(userInfo.getUserOtp())) {
@@ -81,7 +73,7 @@ public class OtpService {
                 otpResponse.setStatus("400");
             }
         } else {
-            otpResponse.setMessage("OTP otp has expired ");
+            otpResponse.setMessage("OTP otp has expired!");
             otpResponse.setStatus("406");
         }
         return otpResponse;
