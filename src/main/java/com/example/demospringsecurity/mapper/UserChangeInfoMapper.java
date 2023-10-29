@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 @Mapper
 public interface UserChangeInfoMapper {
-    UserMapper MAPPER = Mappers.getMapper( UserMapper.class );
+//    UserChangeInfoMapper MAPPER = Mappers.getMapper( UserChangeInfoMapper.class );
 
     UserInfo toEntity(ChangeInfoUserRequest dto);
     ChangeInfoUserRequest toDto(UserInfo entity);

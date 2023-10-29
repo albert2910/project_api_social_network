@@ -1,16 +1,15 @@
 package com.example.demospringsecurity.mapper;
 
 import com.example.demospringsecurity.dto.PostDto;
-import com.example.demospringsecurity.dto.PostViewDto;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
 import com.example.demospringsecurity.model.UserPost;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface PostViewMapper {
-    UserMapper MAPPER = Mappers.getMapper( UserMapper.class );
+public interface PostMapper {
+//    PostMapper MAPPER = Mappers.getMapper( PostMapper.class );
 
     UserPost toEntity(UpPostRequest dto);
-    PostViewDto toDto(UserPost entity);
+    PostDto toDto(UserPost entity);
 }

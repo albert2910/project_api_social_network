@@ -12,7 +12,6 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper
 public interface UserMapper {
-    UserMapper MAPPER = Mappers.getMapper( UserMapper.class );
 
     UserInfo toEntity(RegisterRequest dto);
     RegisterRequest toDto(UserInfo entity);
