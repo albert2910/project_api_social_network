@@ -103,7 +103,7 @@ public class PostService {
         upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
         UserInfo userInfo = userInfoRepository.findByUserId(userPost.getPostUserId())
                 .orElseThrow(() -> new UserNotFoundException("User this post not found"));
-        if (userInfo.getUserId() == userPost.getPostUserId()) {
+        if (userInfo.getUserId() == upPostRequest.getPostUserId()) {
             List<String> imagesEdit = upPostRequest.getPostUrlImages();
             List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
                     0);
@@ -263,7 +263,7 @@ public class PostService {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
-                    .get();
+                    .orElseThrow(() -> new UserNotFoundException("Not found user!"));
             likeRequest.setUserId(userInfo.getUserId());
         }
         boolean checkLikePostIdUserId = likeRepository.existsByLikePostIdAndLikeUserId(likeRequest.getPostId(),

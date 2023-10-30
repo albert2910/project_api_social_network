@@ -440,6 +440,7 @@ class PostServiceTest {
         Assertions.assertEquals(0, deletePostResponse.getIdPostDelete());
         Assertions.assertEquals("You can not delete this post!", deletePostResponse.getMessage());
     }
+
     @Test
     void deletePost_success() {
         Authentication authentication = Mockito.mock(Authentication.class);

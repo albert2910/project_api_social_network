@@ -1,6 +1,7 @@
 package com.example.demospringsecurity.service;
 
 import com.example.demospringsecurity.dto.ReportUserDto;
+import com.example.demospringsecurity.dto.UserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
@@ -89,10 +90,15 @@ public class UserService {
             userInfo.setUserPassword(passwordEncoder.encode(registerRequest.getUserPassword()));
             userInfo.setRoles("ROLE_USER");
             userInfo.setUserAvatar("avatardefault.jpg");
-            userInfoRepository.save(userInfo);
+            UserInfo userInfoSaved = userInfoRepository.save(userInfo);
+            UserDto userDto = new UserDto();
+            userDto.setUserId(userInfoSaved.getUserId());
+            userDto.setUserEmail(userInfoSaved.getUserEmail());
+            userDto.setUserName(userInfoSaved.getUserName());
+            userDto.setUserAvatar(userInfoSaved.getUserAvatar());
             registerResponse.setMessage("Register success!");
             registerResponse.setSuccess(true);
-            registerResponse.setUserInfo(userInfo);
+            registerResponse.setUserInfo(userDto);
         }
         return registerResponse;
     }
