@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.dto.ReportUserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
@@ -14,6 +15,7 @@ import com.example.demospringsecurity.response.auth.PasswordChangeResponse;
 import com.example.demospringsecurity.response.auth.PasswordResetTokenResponse;
 import com.example.demospringsecurity.response.auth.RegisterResponse;
 import com.example.demospringsecurity.response.user.ChangeInfoUserResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +23,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -39,7 +45,19 @@ public class UserServiceTest {
     UserInfoRepository userInfoRepository;
 
     @Mock
+    UserPostRepository userPostRepository;
+
+    @Mock
     AuthChangePassword authChangePassword;
+
+    @Mock
+    CommentRepository commentRepository;
+
+    @Mock
+    FriendRepository friendRepository;
+
+    @Mock
+    LikeRepository likeRepository;
 
     @Mock
     UserMapper userMapper;
@@ -270,6 +288,24 @@ public class UserServiceTest {
                 () -> {
                     userService.findUserById(1);
                 });
+    }
+
+    @Test
+    void exportReport_success() throws IOException {
+        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+        Authentication authentication = Mockito.mock(Authentication.class);
+// Mockito.whens() for your authorization object
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(authentication.getName()).thenReturn("oasdhasihdask");
+        UserInfo userInfo = new UserInfo();
+        Mockito.when(userInfoRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(userInfo));
+        Mockito.when(userPostRepository.countPostLastWeek(Mockito.anyInt(),Mockito.any())).thenReturn(3);
+        Mockito.when(commentRepository.countCommentsLastWeekByMe(Mockito.anyInt(),Mockito.any())).thenReturn(3);
+        Mockito.when(friendRepository.countNewFriendsLastWeek(Mockito.anyInt(),Mockito.any())).thenReturn(3);
+        Mockito.when(likeRepository.countLikesLastWeekByMe(Mockito.anyInt(),Mockito.any())).thenReturn(3);
+        userService.exportReport(mockHttpServletResponse);
     }
 
 

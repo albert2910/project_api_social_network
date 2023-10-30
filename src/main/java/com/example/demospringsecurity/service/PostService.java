@@ -62,9 +62,9 @@ public class PostService {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
-                    .get();
+                    .orElseThrow(() -> new UserNotFoundException("Not found user"));
             upPostRequest.setPostUserId(userInfo.getUserId());
-        }
+        } else return upPostResponse;
         if (upPostRequest.getPostId() != 0) {
             upPostResponse = editPost(upPostRequest);
         } else {
@@ -100,64 +100,58 @@ public class PostService {
                         0)
                 .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
 
-        if (userPost != null) {
-            upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
-            Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userPost.getPostUserId());
-            if (userInfo.get()
-                    .getUserId() == upPostRequest.getPostUserId()) {
-                List<String> imagesEdit = upPostRequest.getPostUrlImages();
-                List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
-                        0);
-                List<Image> imagesEdited = new ArrayList<>();
-                if (imagesEdit != null) {
-                    if (!imageList.isEmpty()) {
-                        for (Image image : imageList) {
-                            System.out.println(image.getImageUrl());
-                            image.setImageFlagDelete(1);
-                            imageRepository.save(image);
-                        }
+        upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
+        UserInfo userInfo = userInfoRepository.findByUserId(userPost.getPostUserId()).orElseThrow(() -> new UserNotFoundException("User this post not found"));
+        if (userInfo.getUserId() == userPost.getPostUserId()) {
+            List<String> imagesEdit = upPostRequest.getPostUrlImages();
+            List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
+                    0);
+            List<Image> imagesEdited = new ArrayList<>();
+            if (imagesEdit != null) {
+                if (!imageList.isEmpty()) {
+                    for (Image image : imageList) {
+                        System.out.println(image.getImageUrl());
+                        image.setImageFlagDelete(1);
+                        imageRepository.save(image);
                     }
-                    if (!imagesEdit.isEmpty()) {
-                        for (String s : imagesEdit) {
-                            Image image = new Image();
-                            image.setImageUrl(s);
-                            image.setImagePostId(upPostRequest.getPostId());
-                            image.setImageFlagDelete(0);
-                            Image imageSaved = imageRepository.save(image);
-                            imagesEdited.add(imageSaved);
-                        }
-                    }
-                } else if (upPostRequest.isDeleteImages()) {
-                    if (!imageList.isEmpty()) {
-                        for (Image image : imageList) {
-                            image.setImageFlagDelete(1);
-                            imageRepository.save(image);
-                        }
-                    }
-                } else {
-                    imagesEdited = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
-                            0);
                 }
-                UserPost userPost1 = postMapper.toEntity(upPostRequest);
-                userPost1.setPostDeleteFlag(0);
-                UserPost userPostEdited = userPostRepository.save(userPost1);
-                PostViewDto postViewDto = postViewMapper.toDto(userPostEdited);
-                int comments= commentRepository.countCommentsByCommentPostId(postViewDto.getPostId());
-                postViewDto.setComments(comments);
-                int likePost = likeRepository.countLikeByLikePostIdAndLikeFlag(postViewDto.getPostId(),
-                        1);
-                postViewDto.setLike(likePost);
-                postViewDto.setPostImages(imagesEdited);
-                upPostResponse.setPostViewDto(postViewDto);
-                upPostResponse.setMessage("Edit this post successfully!");
-                upPostResponse.setStatus("200");
-
+                if (!imagesEdit.isEmpty()) {
+                    for (String s : imagesEdit) {
+                        Image image = new Image();
+                        image.setImageUrl(s);
+                        image.setImagePostId(upPostRequest.getPostId());
+                        image.setImageFlagDelete(0);
+                        Image imageSaved = imageRepository.save(image);
+                        imagesEdited.add(imageSaved);
+                    }
+                }
+            } else if (upPostRequest.isDeleteImages()) {
+                if (!imageList.isEmpty()) {
+                    for (Image image : imageList) {
+                        image.setImageFlagDelete(1);
+                        imageRepository.save(image);
+                    }
+                }
             } else {
-                upPostResponse.setMessage("You cannot edit this post!");
-                upPostResponse.setStatus("400");
+                imagesEdited = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
+                        0);
             }
+            UserPost userPost1 = postMapper.toEntity(upPostRequest);
+            userPost1.setPostDeleteFlag(0);
+            UserPost userPostEdited = userPostRepository.save(userPost1);
+            PostViewDto postViewDto = postViewMapper.toDto(userPostEdited);
+            int comments = commentRepository.countCommentsByCommentPostId(postViewDto.getPostId());
+            postViewDto.setComments(comments);
+            int likePost = likeRepository.countLikeByLikePostIdAndLikeFlag(postViewDto.getPostId(),
+                    1);
+            postViewDto.setLike(likePost);
+            postViewDto.setPostImages(imagesEdited);
+            upPostResponse.setPostViewDto(postViewDto);
+            upPostResponse.setMessage("Edit this post successfully!");
+            upPostResponse.setStatus("200");
+
         } else {
-            upPostResponse.setMessage("Not found this post!");
+            upPostResponse.setMessage("You cannot edit this post!");
             upPostResponse.setStatus("400");
         }
         return upPostResponse;
@@ -174,8 +168,7 @@ public class PostService {
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
                         0)
                 .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
-        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId())
-                .get();
+        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId()).orElseThrow(()-> new UserNotFoundException("Not found user!"));
         if (!listUserNameCanSeePost.contains(userPostedThePost.getUserName())) {
             postResponse.setMessage("You can not see the post because you and " + userPostedThePost.getUserName() + " are not friend!");
             postResponse.setStatus("400");
@@ -186,8 +179,12 @@ public class PostService {
         List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(userPost.getPostId(),
                 0);
 
-        Pageable pageable = PageRequest.of(page,size, Sort.by("commentCreateDate").descending());
-        Page<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId(),pageable);
+        Pageable pageable = PageRequest.of(page,
+                size,
+                Sort.by("commentCreateDate")
+                        .descending());
+        Page<Comment> commentList = commentRepository.findCommentByCommentPostId(userPost.getPostId(),
+                pageable);
         if (!imageList.isEmpty()) {
             postDto.setPostImages(imageList);
         }
@@ -360,10 +357,13 @@ public class PostService {
     //  xem cac bai viet cua ban than dang
     public GetMyPostsResponse getMyPosts() {
         GetMyPostsResponse getMyPostsResponse = new GetMyPostsResponse();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + authentication.getName())));
-            getMyPostsResponse.setUserId(userInfo.get().getUserId());
+            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(authentication.getName())
+                    .orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + authentication.getName())));
+            getMyPostsResponse.setUserId(userInfo.get()
+                    .getUserId());
         }
         List<PostViewDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
         Collections.sort(myPosts,
