@@ -112,6 +112,13 @@ public class UserServiceTest {
         Mockito.when(userMapper.toEntity(registerRequest))
                 .thenReturn(userInfo);
         Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn("askjdjkasdkjasdkasdkas");
+        UserInfo userInfoSaved = new UserInfo();
+        userInfoSaved.setUserId(1);
+        userInfoSaved.setUserName("test");
+        userInfoSaved.setUserEmail("test@gmail.com");
+        userInfoSaved.setUserAvatar("test.jpg");
+        Mockito.when(userInfoRepository.save(Mockito.any())).thenReturn(userInfoSaved);
+
         RegisterResponse registerResponse = userService.registerUser(registerRequest);
         Assertions.assertTrue(registerResponse.isSuccess());
         Assertions.assertEquals("Register success!",

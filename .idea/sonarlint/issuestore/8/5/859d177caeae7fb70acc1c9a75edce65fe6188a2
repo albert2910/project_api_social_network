@@ -1,11 +1,12 @@
 
-l
-java:S1192W"JDefine a constant instead of duplicating this literal "ROLE_USER" 3 times.(€îÆşÿÿÿÿ8ûÆÛÏ¶1
 U
-java:S3655«"7Call "userInfo.isPresent()" before accessing the value.(…¦•Ë8àÇÛÏ¶1
+java:S3655¼"7Call "userInfo.isPresent()" before accessing the value.(¦Û§Ö8ùøèõ·1
+_
+java:S3655"ACall "passwordResetToken.isPresent()" before accessing the value.(œ‘é8ùøèõ·1
+Z
+java:S3655–"7Call "userInfo.isPresent()" before accessing the value.(ò•Ì›ùÿÿÿÿ8ùøèõ·1
 T
-java:S3655æ"7Call "Optional#isPresent()" before accessing the value.(¨÷Ã8àÇÛÏ¶1
-Y
-java:S3655k"7Call "userInfo.isPresent()" before accessing the value.(€½ëúøÿÿÿÿ8àÇÛÏ¶1
-p
-java:S3776¥"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(úöìµ8îÇÛÏ¶1
+java:S3655v"7Call "userInfo.isPresent()" before accessing the value.(‘´ìŞ8ùøèõ·1
+Z
+java:S3655ş"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8ùøèõ·1
+G	java:S106¢"+Replace this use of System.out by a logger.(·ë€S8„ùèõ·1

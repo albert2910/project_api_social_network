@@ -279,7 +279,7 @@ public class PostService {
 
             } else {
                 like.setLikeFlag(0);
-                likeResponse.setMessage("Disliked");
+                likeResponse.setMessage("Disliked!");
                 likeResponse.setLiked(false);
                 likeRepository.save(like);
             }
@@ -306,7 +306,7 @@ public class PostService {
         List<PostViewDto> posts = new ArrayList<>();
         for (String userNameFriend : userNameFriends) {
             UserInfo userInfo = userInfoRepository.findByUserName(userNameFriend)
-                    .get();
+                    .orElseThrow(() -> new UserNotFoundException("Not found user!"));
             List<PostViewDto> postsByIdUser = getAllPostsByUserId(userInfo.getUserId());
             posts.addAll(postsByIdUser);
         }
@@ -356,14 +356,15 @@ public class PostService {
                     .orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + authentication.getName())));
             getMyPostsResponse.setUserId(userInfo.get()
                     .getUserId());
+            List<PostViewDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
+            Collections.sort(myPosts,
+                    Comparator.comparing(PostViewDto::getPostCreateDate)
+                            .reversed());
+            getMyPostsResponse.setMyPosts(myPosts);
+            getMyPostsResponse.setMessage("Success!");
+            getMyPostsResponse.setStatus(200);
         }
-        List<PostViewDto> myPosts = getAllPostsByUserId(getMyPostsResponse.getUserId());
-        Collections.sort(myPosts,
-                Comparator.comparing(PostViewDto::getPostCreateDate)
-                        .reversed());
-        getMyPostsResponse.setMyPosts(myPosts);
-        getMyPostsResponse.setMessage("Success!");
-        getMyPostsResponse.setStatus(200);
+
         return getMyPostsResponse;
     }
 
