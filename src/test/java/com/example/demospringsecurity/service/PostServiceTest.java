@@ -12,6 +12,7 @@ import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.model.UserPost;
 import com.example.demospringsecurity.repository.*;
 import com.example.demospringsecurity.response.friend.GetListFriendResponse;
+import com.example.demospringsecurity.response.post.DeletePostResponse;
 import com.example.demospringsecurity.response.post.PostResponse;
 import com.example.demospringsecurity.response.post.UpPostResponse;
 import org.junit.jupiter.api.Assertions;
@@ -392,6 +393,70 @@ class PostServiceTest {
         Mockito.when(userInfoRepository.findByUserId(Mockito.anyInt())).thenReturn(Optional.of(userPostedThePost));
         PostResponse postResponse = postService.findPostById(1,0,3);
         Assertions.assertNull(postResponse.getPostDto());
+    }
+
+    @Test
+    void deletePost_accessDenied() {
+        Authentication authentication = Mockito.mock(AnonymousAuthenticationToken.class);
+// Mockito.whens() for your authorization object
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication())
+                .thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        DeletePostResponse deletePostResponse = postService.deletePost(1);
+        Assertions.assertNull(deletePostResponse.getMessage());
+    }
+
+    @Test
+    void deletePost_notFoundPost() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+// Mockito.whens() for your authorization object
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication())
+                .thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(authentication.getName()).thenReturn("asiodjasoi");
+        UserInfo userInfo = new UserInfo();
+        Mockito.when(userInfoRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(userInfo));
+        Mockito.when(userPostRepository.findById(Mockito.anyInt())).thenThrow(PostNotFoundException.class);
+        Assertions.assertThrows(PostNotFoundException.class, () ->  postService.deletePost(1));
+    }
+    @Test
+    void deletePost_canNotDeletePost() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+// Mockito.whens() for your authorization object
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication())
+                .thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(authentication.getName()).thenReturn("asiodjasoi");
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(1);
+        Mockito.when(userInfoRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(userInfo));
+        UserPost userPost = new UserPost();
+        userPost.setPostUserId(2);
+        Mockito.when(userPostRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(userPost));
+        DeletePostResponse deletePostResponse = postService.deletePost(1);
+        Assertions.assertEquals(0, deletePostResponse.getIdPostDelete());
+        Assertions.assertEquals("You can not delete this post!", deletePostResponse.getMessage());
+    }
+    @Test
+    void deletePost_success() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+// Mockito.whens() for your authorization object
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication())
+                .thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(authentication.getName()).thenReturn("asiodjasoi");
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(1);
+        Mockito.when(userInfoRepository.findByUserName(Mockito.anyString())).thenReturn(Optional.of(userInfo));
+        UserPost userPost = new UserPost();
+        userPost.setPostUserId(1);
+        Mockito.when(userPostRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(userPost));
+        DeletePostResponse deletePostResponse = postService.deletePost(1);
+        Assertions.assertEquals("Delete post successful!", deletePostResponse.getMessage());
     }
 
 

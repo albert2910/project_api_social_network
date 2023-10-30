@@ -101,7 +101,8 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
 
         upPostRequest.setPostCreateDate(userPost.getPostCreateDate());
-        UserInfo userInfo = userInfoRepository.findByUserId(userPost.getPostUserId()).orElseThrow(() -> new UserNotFoundException("User this post not found"));
+        UserInfo userInfo = userInfoRepository.findByUserId(userPost.getPostUserId())
+                .orElseThrow(() -> new UserNotFoundException("User this post not found"));
         if (userInfo.getUserId() == userPost.getPostUserId()) {
             List<String> imagesEdit = upPostRequest.getPostUrlImages();
             List<Image> imageList = imageRepository.findImageByImagePostIdAndImageFlagDelete(upPostRequest.getPostId(),
@@ -168,7 +169,8 @@ public class PostService {
         UserPost userPost = userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(postId,
                         0)
                 .orElseThrow(() -> new PostNotFoundException("Post not exist!"));
-        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId()).orElseThrow(()-> new UserNotFoundException("Not found user!"));
+        UserInfo userPostedThePost = userInfoRepository.findByUserId(userPost.getPostUserId())
+                .orElseThrow(() -> new UserNotFoundException("Not found user!"));
         if (!listUserNameCanSeePost.contains(userPostedThePost.getUserName())) {
             postResponse.setMessage("You can not see the post because you and " + userPostedThePost.getUserName() + " are not friend!");
             postResponse.setStatus("400");
@@ -206,30 +208,20 @@ public class PostService {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
-                    .get();
+                    .orElseThrow(() -> new UserNotFoundException("Not found user!"));
             UserPost userPost = userPostRepository.findById(idPost)
-                    .get();
-            if (userPost != null) {
-                if (userPost.getPostUserId() == userInfo.getUserId()) {
-                    userPost.setPostDeleteFlag(1);
-                    userPostRepository.save(userPost);
-                    deletePostResponse.setMessage("Delete post successful!");
-                    deletePostResponse.setStatus("200");
-                    deletePostResponse.setIdPostDelete(userPost.getPostId());
-                } else {
-                    deletePostResponse.setMessage("You can not delete this post!");
-                    deletePostResponse.setStatus("400");
-                    deletePostResponse.setIdPostDelete(0);
-                }
+                    .orElseThrow(() -> new PostNotFoundException("Not found post!"));
+            if (userPost.getPostUserId() == userInfo.getUserId()) {
+                userPost.setPostDeleteFlag(1);
+                userPostRepository.save(userPost);
+                deletePostResponse.setMessage("Delete post successful!");
+                deletePostResponse.setStatus("200");
+                deletePostResponse.setIdPostDelete(userPost.getPostId());
             } else {
-                deletePostResponse.setMessage("Not found post!");
+                deletePostResponse.setMessage("You can not delete this post!");
                 deletePostResponse.setStatus("400");
                 deletePostResponse.setIdPostDelete(0);
             }
-        } else {
-            deletePostResponse.setMessage("Token is invalid!");
-            deletePostResponse.setStatus("403");
-            deletePostResponse.setIdPostDelete(0);
         }
         return deletePostResponse;
     }
