@@ -42,7 +42,7 @@ public class CommentService {
             UserInfo userInfo = userInfoRepository.findByUserName(currentUserName).get();
             commentRequest.setCommentUserId(userInfo.getUserId());
         } else return commentResponse;
-        if(!userInfoRepository.existsById(commentRequest.getCommentPostId())) {
+        if(!userPostRepository.existsById(commentRequest.getCommentPostId())) {
             throw new PostNotFoundException("Not found post has postId: "+ commentRequest.getCommentPostId());
         }
         //        check friend

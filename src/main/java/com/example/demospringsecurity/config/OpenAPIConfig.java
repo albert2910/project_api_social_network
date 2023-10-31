@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Social APIs", version = "1.0", description = "Social APIs",
-        contact = @Contact(name = "hoangtm1308", email = "hoangtm1308@gmail.com")),
+        contact = @Contact(name = "namdeptrai", email = "hnnam29102000@gmail.com")),
         security = {@SecurityRequirement(name = "basicAuth"), @SecurityRequirement(name = "bearerToken")})
 @SecuritySchemes({
         @SecurityScheme(name = "bearerToken", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")

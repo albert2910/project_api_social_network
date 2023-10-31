@@ -19,7 +19,7 @@ public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
     List<UserPost> findUserPostsByPostUserIdAndAndPostDeleteFlag(int postUserId, int postDeleteFlag);
 
     Optional<UserPost> findUserPostByPostIdAndAndPostDeleteFlag(int postId, int postDeleteFlag);
-    @Query(nativeQuery = true, value = "select count(tbuser_post.post_id) as numberPostLastWeek from social_network.tbuser_post where tbuser_post.post_user_id = :userId and (SELECT DATEDIFF(:current_date, tbuser_post.post_user_time_create) <= 7);")
+    @Query(nativeQuery = true, value = "select count(tbuser_post.post_id) as numberPostLastWeek from social_network.tbuser_post where tbuser_post.post_user_id = :userId and tbuser_post.post_delete_flag = 0 and (SELECT DATEDIFF(:current_date, tbuser_post.post_user_time_create) <= 7);")
     int countPostLastWeek(@Param("userId") int userId ,@Param("current_date") LocalDateTime localDateTime);
 
 }

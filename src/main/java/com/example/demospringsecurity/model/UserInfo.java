@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class UserInfo {
     private String userEmail;
 
     @Column(name = "user_password")
+    @JsonIgnore
     private String userPassword;
 
     @Column(name = "user_role")

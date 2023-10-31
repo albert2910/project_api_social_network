@@ -823,4 +823,30 @@ class PostServiceTest {
         Assertions.assertEquals("Success!",getMyPostsResponse.getMessage());
     }
 
+    @Test
+    void getUserLikePost_postNotFound() {
+        Mockito.when(userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(Mockito.anyInt(),Mockito.anyInt())).thenThrow(PostNotFoundException.class);
+        Assertions.assertThrows(PostNotFoundException.class,()-> postService.getUserLikePost(1));
+    }
+    @Test
+    void getUserLikePost_userNotExists() {
+        UserPost userPost = new UserPost();
+        Mockito.when(userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(Mockito.anyInt(),Mockito.anyInt())).thenReturn(Optional.of(userPost));
+        Mockito.when(userInfoRepository.findByUserId(Mockito.anyInt())).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class,()-> postService.getUserLikePost(1));
+    }
+
+//    @Test
+//    void getUserLikePost_success() {
+//        UserPost userPost = new UserPost();
+//        Mockito.when(userPostRepository.findUserPostByPostIdAndAndPostDeleteFlag(Mockito.anyInt(),Mockito.anyInt())).thenReturn(Optional.of(userPost));
+//        UserInfo userPostPost = new UserInfo();
+//        userPostPost.setUserId(1);
+//        userPostPost.setUserName("nambeoi");
+//        Mockito.when(userInfoRepository.findByUserId(Mockito.anyInt())).thenReturn(Optional.of(userPostPost));
+//
+//        Assertions.assertThrows(UserNotFoundException.class,()-> postService.getUserLikePost(1));
+//    }
+
 }
