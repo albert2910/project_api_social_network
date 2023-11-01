@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.exceptions.OtpExpiredException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.UserInfoRepository;
@@ -48,18 +49,15 @@ public class OtpService {
             OTP[i] = numbers.charAt(rdm_method.nextInt(numbers.length()));
             otp += OTP[i];
         }
-
-        System.out.println(otp);
         return otp;
     }
 
 
     public OtpResponse verifyOtp(String username, String otp) {
-        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user userName: "+username));
+        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user username: "+username));
         OtpResponse otpResponse = new OtpResponse();
         if (userInfo.getUserOtp() == null) {
-            otpResponse.setMessage("OTP otp has expired!");
-            otpResponse.setStatus("406");
+            throw new OtpExpiredException("OTP otp has expired!");
         } else if (checkTimeOtp(userInfo)) {
             if (otp.equals(userInfo.getUserOtp())) {
                 userInfo.setUserOtp(null);
@@ -73,8 +71,7 @@ public class OtpService {
                 otpResponse.setStatus("400");
             }
         } else {
-            otpResponse.setMessage("OTP otp has expired!");
-            otpResponse.setStatus("406");
+            throw new OtpExpiredException("OTP otp has expired!");
         }
         return otpResponse;
     }

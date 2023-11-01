@@ -11,5 +11,4 @@ public class LoginResponse {
     private String status;
     private String userName;
     private String otp;
-    private String message;
 }

@@ -3,6 +3,7 @@ package com.example.demospringsecurity.service;
 import com.example.demospringsecurity.dto.ReportUserDto;
 import com.example.demospringsecurity.dto.UserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
+import com.example.demospringsecurity.dto.request.AuthRequest;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
 import com.example.demospringsecurity.exceptions.TokenNotFoundException;
@@ -13,14 +14,19 @@ import com.example.demospringsecurity.model.ExcelGenerator;
 import com.example.demospringsecurity.model.PasswordResetToken;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.*;
-import com.example.demospringsecurity.response.user.ChangeInfoUserResponse;
+import com.example.demospringsecurity.response.auth.LoginResponse;
 import com.example.demospringsecurity.response.auth.PasswordChangeResponse;
 import com.example.demospringsecurity.response.auth.PasswordResetTokenResponse;
 import com.example.demospringsecurity.response.auth.RegisterResponse;
+import com.example.demospringsecurity.response.user.ChangeInfoUserResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,6 +74,12 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    OtpService otpService;
+
     /**
      * đăng ký tài khoản
      *
@@ -103,6 +115,23 @@ public class UserService {
         return registerResponse;
     }
 
+    public LoginResponse authenticateAndGetOtp(AuthRequest authRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(),
+                    authRequest.getPassword()));
+            LoginResponse loginResponse = new LoginResponse();
+            if (authentication.isAuthenticated()) {
+                loginResponse.setStatus("200");
+                loginResponse.setUserName(authRequest.getUserName());
+                loginResponse.setOtp(otpService.sendOtp(authRequest.getUserName()));
+            }
+            return loginResponse;
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            throw new BadCredentialsException("adu");
+        }
+    }
+
     /**
      * quên mật khẩu trả về token
      *
@@ -112,10 +141,10 @@ public class UserService {
     public PasswordResetTokenResponse forgotPassword(String username) {
         PasswordResetTokenResponse passwordResetTokenResponse = new PasswordResetTokenResponse();
         //        check tài khoản tồn tại bởi username
-        Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException("Not found user has userName: " + username)));
+        UserInfo userInfo = userInfoRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("Not found user has username: " + username));
 
-        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserId(userInfo.get()
+        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserId(userInfo
                 .getUserId());
         String tokenReset = UUID.randomUUID()
                 .toString();
@@ -123,8 +152,7 @@ public class UserService {
         passwordResetTokenAdd.setTokenReset(tokenReset);
         LocalDateTime dateResetToken = java.time.LocalDateTime.now();
         passwordResetTokenAdd.setPasswordResetToken_datetime(dateResetToken);
-        passwordResetTokenAdd.setUserId(userInfo.get()
-                .getUserId());
+        passwordResetTokenAdd.setUserId(userInfo.getUserId());
         passwordResetToken.ifPresent(resetToken -> passwordResetTokenAdd.setPasswordResetTokenId(resetToken.getPasswordResetTokenId()));
         passwordResetTokenRepository.save(passwordResetTokenAdd);
         passwordResetTokenResponse.setStatus("200");
@@ -136,19 +164,20 @@ public class UserService {
 
     public PasswordChangeResponse changePassword(AuthChangePassword authChangePassword) {
         PasswordChangeResponse passwordChangeResponse = new PasswordChangeResponse();
-        Optional<PasswordResetToken> passwordResetToken = Optional.ofNullable(passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
                         authChangePassword.getTokenReset())
-                .orElseThrow(() -> new TokenNotFoundException("Token is invalid!")));
+                .orElseThrow(() -> new TokenNotFoundException("Token is invalid!"));
 
-        if (!checkTimeTokenReset(passwordResetToken.get())) {
+        if (!checkTimeTokenReset(passwordResetToken)) {
             passwordChangeResponse.setStatus("406");
             passwordChangeResponse.setMessage("Token has expired");
         } else {
-            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserId(passwordResetToken.get()
+            UserInfo userInfo = userInfoRepository.findByUserId(passwordResetToken
                             .getUserId())
-                    .orElseThrow(() -> new UserNotFoundException("Not found user!")));
-            userInfo.get().setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
-            userInfoRepository.save(userInfo.get());
+                    .orElseThrow(() -> new UserNotFoundException("Not found user!"));
+            userInfo
+                    .setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
+            userInfoRepository.save(userInfo);
             passwordChangeResponse.setStatus("200");
             passwordChangeResponse.setMessage("Reset password success!");
         }

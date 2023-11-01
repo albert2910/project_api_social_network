@@ -4,6 +4,7 @@ import com.example.demospringsecurity.dto.PostDto;
 import com.example.demospringsecurity.dto.PostViewDto;
 import com.example.demospringsecurity.dto.request.LikeRequest;
 import com.example.demospringsecurity.dto.request.UpPostRequest;
+import com.example.demospringsecurity.exceptions.NotPermissionException;
 import com.example.demospringsecurity.exceptions.PostNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapper.PostMapper;
@@ -151,10 +152,7 @@ public class PostService {
             upPostResponse.setMessage("Edit this post successfully!");
             upPostResponse.setStatus("200");
 
-        } else {
-            upPostResponse.setMessage("You cannot edit this post!");
-            upPostResponse.setStatus("400");
-        }
+        } else throw new NotPermissionException("You cannot edit this post!");
         return upPostResponse;
     }
 

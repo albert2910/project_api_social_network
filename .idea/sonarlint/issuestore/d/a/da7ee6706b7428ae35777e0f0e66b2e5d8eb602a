@@ -1,12 +1,10 @@
 
 s
-java:S1192­"PDefine a constant instead of duplicating this literal "Not found user!" 3 times.(±ìÁşÿÿÿÿ8‚ÀÄõ·1
+java:S1192­"PDefine a constant instead of duplicating this literal "Not found user!" 4 times.(±ìÁşÿÿÿÿ8‚ÀÄõ·1
 r
 java:S1192e"PDefine a constant instead of duplicating this literal "Post not exist!" 4 times.(¿şÂøÿÿÿÿ8ñø›õ·1
 Z
 java:S3655å"7Call "userInfo.isPresent()" before accessing the value.(íµæÁÿÿÿÿÿ8œ õ·1
-U
-java:S3655´"7Call "Optional#isPresent()" before accessing the value.(É®Šã8œ õ·1
 Z
 java:S3655¹"7Call "Optional#isPresent()" before accessing the value.(ªîùüÿÿÿÿ8œ õ·1
 o

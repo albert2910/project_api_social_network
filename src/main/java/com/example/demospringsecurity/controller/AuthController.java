@@ -27,9 +27,6 @@ public class AuthController {
     UserService userService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
     OtpService otpService;
     @PostMapping("/signup")
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
@@ -38,23 +35,7 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     public ResponseEntity<LoginResponse> authenticateAndGetOtp(@RequestBody @Valid AuthRequest authRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(),
-                    authRequest.getPassword()));
-            LoginResponse loginResponse = new LoginResponse();
-            if (authentication.isAuthenticated()) {
-                loginResponse.setStatus("200");
-                loginResponse.setUserName(authRequest.getUserName());
-                loginResponse.setOtp(otpService.sendOtp(authRequest.getUserName()));
-                loginResponse.setMessage("OTP: " + loginResponse.getOtp());
-            }
-            return new ResponseEntity<>(loginResponse,
-                    HttpStatus.OK);
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-            throw new BadCredentialsException("adu");
-        }
-
+        return new ResponseEntity<>(userService.authenticateAndGetOtp(authRequest),HttpStatus.OK);
     }
 
     @PostMapping("/verify-otp")

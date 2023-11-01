@@ -1,7 +1,6 @@
 package com.example.demospringsecurity.config;
 
-import com.example.demospringsecurity.exceptions.TokenNotFoundException;
-import com.example.demospringsecurity.exceptions.UserNotFoundException;
+import com.example.demospringsecurity.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +31,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, List<String>>> handleNotFoundException(UserNotFoundException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FriendNotFoundException.class)
+    public ResponseEntity<Map<String, List<String>>> handleNotFriendException(FriendNotFoundException ex) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotPermissionException.class)
+    public ResponseEntity<Map<String, List<String>>> handleNotPermissionException(NotPermissionException ex) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, List<String>>> handleBadRequestException(BadRequestException ex) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<Map<String, List<String>>> handleOtpExpiredException(OtpExpiredException ex) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.GONE);
     }
     @ExceptionHandler(TokenNotFoundException.class)
     public ResponseEntity<Map<String, List<String>>> handleTokenNotFoundException(UserNotFoundException ex) {

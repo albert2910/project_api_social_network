@@ -1,6 +1,8 @@
 package com.example.demospringsecurity.service;
 
 import com.example.demospringsecurity.dto.request.FriendRequest;
+import com.example.demospringsecurity.exceptions.BadRequestException;
+import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.model.Friend;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.FriendRepository;
@@ -37,22 +39,16 @@ public class FriendService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).get();
+            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).orElseThrow(() -> new UserNotFoundException("Not found user!"));
             friendRequest.setUserSenderId(currentUser.getUserId());
         }
 //      gui loi moi ket ban den user ko ton tai
         if (!userInfoRepository.existsUserInfoByUserId(friendRequest.getUserReceiverId())) {
-            addFriendResponse.setStatus("400");
-            addFriendResponse.setMessage("Not found receiver!");
-            addFriendResponse.setFriend(null);
-            return addFriendResponse;
+            throw new UserNotFoundException("Not found receiver!");
         }
 //        gui loi moi ket ban cho chinh minh
         if (friendRequest.getUserReceiverId() == friendRequest.getUserSenderId()) {
-            addFriendResponse.setStatus("400");
-            addFriendResponse.setMessage("You can not send friend request to yourself!");
-            addFriendResponse.setFriend(null);
-            return addFriendResponse;
+            throw new BadRequestException("You can not send friend request to yourself!");
         }
         //  status = 0 unfriend
         //  status = 1 sending
