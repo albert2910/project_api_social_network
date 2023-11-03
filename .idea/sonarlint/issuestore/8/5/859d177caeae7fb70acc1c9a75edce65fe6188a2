@@ -1,12 +1,32 @@
 
-Z
-java:S3655–"7Call "userInfo.isPresent()" before accessing the value.(ò•Ì›ùÿÿÿÿ8ùøèõ·1
-T
-java:S3655v"7Call "userInfo.isPresent()" before accessing the value.(‘´ìŞ8ùøèõ·1
-_
-java:S3655"ACall "passwordResetToken.isPresent()" before accessing the value.(œ‘é8ùøèõ·1
-Z
-java:S3655ş"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8ùøèõ·1
 U
-java:S3655¼"7Call "userInfo.isPresent()" before accessing the value.(¦Û§Ö8ùøèõ·1
-G	java:S106¢"+Replace this use of System.out by a logger.(·ë€S8„ùèõ·1
+java:S3655Ô"7Call "userInfo.isPresent()" before accessing the value.(¦Û§Ö8øÉ•¡¹1
+Z
+java:S3655–"7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8øÉ•¡¹1
+_
+java:S68130"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S68133"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S68136"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S68139"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813<"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813?"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813B"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813E"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813H"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÉ•¡¹1
+_
+java:S6813K"BRemove this field injection and use constructor injection instead.(êæÄŞ8ûÉ•¡¹1
+_
+java:S6813N"BRemove this field injection and use constructor injection instead.(êæÄŞ8ûÉ•¡¹1
+_
+java:S6813Q"BRemove this field injection and use constructor injection instead.(êæÄŞ8ûÉ•¡¹1
+G	java:S106º"+Replace this use of System.out by a logger.(·ë€S8ŒÊ•¡¹1
+s
+java:S1128"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8Õ”ş£¹1

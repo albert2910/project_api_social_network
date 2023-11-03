@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
-    private String status;
+    private String message;
     private String userName;
     private String otp;
 }

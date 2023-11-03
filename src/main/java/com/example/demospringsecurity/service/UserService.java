@@ -1,11 +1,12 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.dto.RegisterUserSuccess;
 import com.example.demospringsecurity.dto.ReportUserDto;
-import com.example.demospringsecurity.dto.UserDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.AuthRequest;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
+import com.example.demospringsecurity.exceptions.BadRequestException;
 import com.example.demospringsecurity.exceptions.TokenNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapper.UserChangeInfoMapper;
@@ -90,28 +91,22 @@ public class UserService {
         RegisterResponse registerResponse = new RegisterResponse();
 //            check trùng email
         if (userInfoRepository.existsUserInfoByUserEmail(registerRequest.getUserEmail())) {
-            registerResponse.setMessage("Email already exists!");
-            registerResponse.setSuccess(false);
-            registerResponse.setUserInfo(null);
-        } else if (userInfoRepository.existsUserInfosByUserName(registerRequest.getUserName())) {
-            registerResponse.setMessage("Username already exists!");
-            registerResponse.setSuccess(false);
-            registerResponse.setUserInfo(null);
-        } else {
-            UserInfo userInfo = userMapper.toEntity(registerRequest);
-            userInfo.setUserPassword(passwordEncoder.encode(registerRequest.getUserPassword()));
-            userInfo.setRoles("ROLE_USER");
-            userInfo.setUserAvatar("avatardefault.jpg");
-            UserInfo userInfoSaved = userInfoRepository.save(userInfo);
-            UserDto userDto = new UserDto();
-            userDto.setUserId(userInfoSaved.getUserId());
-            userDto.setUserEmail(userInfoSaved.getUserEmail());
-            userDto.setUserName(userInfoSaved.getUserName());
-            userDto.setUserAvatar(userInfoSaved.getUserAvatar());
-            registerResponse.setMessage("Register success!");
-            registerResponse.setSuccess(true);
-            registerResponse.setUserInfo(userDto);
+            throw new BadRequestException("Email already exists!");
         }
+        if (userInfoRepository.existsUserInfosByUserName(registerRequest.getUsername())) {
+            throw new BadRequestException("Username already exists!");
+        }
+        UserInfo userInfo = userMapper.toEntity(registerRequest);
+        userInfo.setUserPassword(passwordEncoder.encode(registerRequest.getUserPassword()));
+        userInfo.setRoles("ROLE_USER");
+        userInfo.setUserAvatar("avatardefault.jpg");
+        UserInfo userInfoSaved = userInfoRepository.save(userInfo);
+        RegisterUserSuccess registerUserSuccess = new RegisterUserSuccess(userInfoSaved.getUserId(),
+                userInfoSaved.getUserName(),
+                userInfo.getUserEmail());
+        registerResponse.setData(registerUserSuccess);
+        registerResponse.setMessage("Register success!");
+
         return registerResponse;
     }
 
@@ -121,14 +116,14 @@ public class UserService {
                     authRequest.getPassword()));
             LoginResponse loginResponse = new LoginResponse();
             if (authentication.isAuthenticated()) {
-                loginResponse.setStatus("200");
+                loginResponse.setMessage("Please use otp to continue logging in!");
                 loginResponse.setUserName(authRequest.getUserName());
                 loginResponse.setOtp(otpService.sendOtp(authRequest.getUserName()));
             }
             return loginResponse;
-        } catch (AuthenticationException e) {
+        } catch (BadCredentialsException e) {
             e.printStackTrace();
-            throw new BadCredentialsException("adu");
+            throw new BadCredentialsException("Wrong username or password! Please check or use forgot password!");
         }
     }
 

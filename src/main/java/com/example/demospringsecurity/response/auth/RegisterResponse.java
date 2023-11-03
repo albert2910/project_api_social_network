@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.response.auth;
 
+import com.example.demospringsecurity.dto.RegisterUserSuccess;
 import com.example.demospringsecurity.dto.UserDto;
 import com.example.demospringsecurity.model.UserInfo;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterResponse {
     private String message;
-    private boolean isSuccess;
-    private UserDto userInfo;
+    private RegisterUserSuccess data;
 }

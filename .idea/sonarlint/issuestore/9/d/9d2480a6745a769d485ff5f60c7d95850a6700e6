@@ -1,0 +1,15 @@
+
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8“¤¡¹1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8“¤¡¹1
+€
+java:S1128"^Remove this unused import 'org.springframework.security.authentication.AuthenticationManager'.(ğş–şÿÿÿÿ8 ¤¡¹1
+‚
+java:S1128"`Remove this unused import 'org.springframework.security.authentication.BadCredentialsException'.(Òòîƒÿÿÿÿÿ8 ¤¡¹1
+
+java:S1128"lRemove this unused import 'org.springframework.security.authentication.UsernamePasswordAuthenticationToken'.(ÖÆ„Ùüÿÿÿÿ8 ¤¡¹1
+j
+java:S1128"MRemove this unused import 'org.springframework.security.core.Authentication'.(ñıÓ“8 ¤¡¹1
+s
+java:S1128"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8 ¤¡¹1

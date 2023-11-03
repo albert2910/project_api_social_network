@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(type = "object" ,example = "{\n" +
         "  \"userEmail\": \"string\",\n" +
-        "  \"userName\": \"string\",\n" +
+        "  \"username\": \"string\",\n" +
         "  \"userPassword\": \"string\"\n" +
         "}")
 public class RegisterRequest {
@@ -20,10 +20,10 @@ public class RegisterRequest {
     @Email(message = "Incorrect email format!")
     private String userEmail;
 
-    @NotBlank(message = "Invalid userName: Empty userName")
-    @NotNull(message = "Invalid userName: userName is NULL")
-    @Size(min = 3, max = 30, message = "Invalid userName: Exceeds 30 characters")
-    private String userName;
+    @NotBlank(message = "Invalid username: Empty username")
+    @NotNull(message = "Invalid username: username is NULL")
+    @Size(min = 3, max = 30, message = "Invalid username: Exceeds 30 characters")
+    private String username;
 
     @NotBlank(message = "Invalid password: Empty password")
     @NotNull(message = "Invalid password: Password is NULL")

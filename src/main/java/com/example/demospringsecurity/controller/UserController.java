@@ -34,7 +34,7 @@ public class UserController {
 
 //  chinh sua thong tin ca nhan
     @PatchMapping(value = "/info/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file", required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
+    public ResponseEntity<ChangeInfoUserResponse> changeInfo(@RequestPart(value = "file" , required = false) @Valid @ValidFile @ValidSizeFile MultipartFile multipartFile , ChangeInfoUserRequest changeInfoUserRequest ) throws IOException {
         if(multipartFile != null) {
             FileUploadResponse fileUploadResponse = fileService.uploadFile(multipartFile);
             changeInfoUserRequest.setUserAvatar(fileUploadResponse.getFileName());

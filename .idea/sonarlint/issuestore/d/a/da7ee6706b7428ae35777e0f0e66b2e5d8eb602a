@@ -1,14 +1,30 @@
 
 s
-java:S1192­"PDefine a constant instead of duplicating this literal "Not found user!" 4 times.(±ìÁşÿÿÿÿ8‚ÀÄõ·1
+java:S1192«"PDefine a constant instead of duplicating this literal "Not found user!" 4 times.(±ìÁşÿÿÿÿ8‚ÀÄõ·1
 r
-java:S1192e"PDefine a constant instead of duplicating this literal "Post not exist!" 4 times.(¿şÂøÿÿÿÿ8ñø›õ·1
+java:S1192f"PDefine a constant instead of duplicating this literal "Post not exist!" 4 times.(¿şÂøÿÿÿÿ8ñø›õ·1
 Z
-java:S3655å"7Call "userInfo.isPresent()" before accessing the value.(íµæÁÿÿÿÿÿ8œ õ·1
+java:S3655ã"7Call "userInfo.isPresent()" before accessing the value.(íµæÁÿÿÿÿÿ8œ õ·1
 Z
-java:S3655¹"7Call "Optional#isPresent()" before accessing the value.(ªîùüÿÿÿÿ8œ õ·1
+java:S3655·"7Call "Optional#isPresent()" before accessing the value.(ªîùüÿÿÿÿ8œ õ·1
+_
+java:S6813""BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S6813%"BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S6813("BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S6813+"BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S6813."BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S68131"BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S68134"BRemove this field injection and use constructor injection instead.(êæÄŞ8ó¥¼ú¸1
+_
+java:S68137"BRemove this field injection and use constructor injection instead.(êæÄŞ8ô¥¼ú¸1
 o
-java:S3776a"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(‡½Î•8¦ù›õ·1
-G	java:S106r"+Replace this use of System.out by a logger.(Š¶Œ¬8§œ õ·1
-^	java:S125å"<This block of commented-out lines of code should be removed.(Àá¨šùÿÿÿÿ8°œ õ·1
-H	java:S106Ã"+Replace this use of System.out by a logger.(çİ×³8µœ õ·1
+java:S3776b"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(‡½Î•8¦ù›õ·1
+G	java:S106s"+Replace this use of System.out by a logger.(Š¶Œ¬8§œ õ·1
+^	java:S125ã"<This block of commented-out lines of code should be removed.(Àá¨šùÿÿÿÿ8°œ õ·1
+H	java:S106Á"+Replace this use of System.out by a logger.(çİ×³8µœ õ·1

@@ -11,7 +11,7 @@ public class UserRegisterMapperImpl implements UserMapper {
     public UserInfo toEntity(RegisterRequest dto) {
         UserInfo userInfo = new UserInfo();
         userInfo.setUserEmail(dto.getUserEmail());
-        userInfo.setUserName(dto.getUserName());
+        userInfo.setUserName(dto.getUsername());
         userInfo.setUserPassword(dto.getUserPassword());
         return userInfo;
     }
@@ -20,7 +20,7 @@ public class UserRegisterMapperImpl implements UserMapper {
     public RegisterRequest toDto(UserInfo entity) {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserEmail(entity.getUserEmail());
-        registerRequest.setUserName(entity.getUserName());
+        registerRequest.setUsername(entity.getUserName());
         registerRequest.setUserPassword(entity.getUserPassword());
         return registerRequest;
     }

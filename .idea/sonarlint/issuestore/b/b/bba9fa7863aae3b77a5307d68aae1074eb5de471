@@ -1,7 +1,13 @@
 
-T
-java:S3655>"7Call "Optional#isPresent()" before accessing the value.(ËÊºú8§ıŸ§¸1
-Y
-java:S3655."7Call "Optional#isPresent()" before accessing the value.(¦± üÿÿÿÿ8¦ıŸ§¸1
+r
+java:S1192/"PDefine a constant instead of duplicating this literal "Not found user!" 3 times.(±ìÁşÿÿÿÿ8Ë£Ñí¸1
 S
 java:S3655X"7Call "Optional#isPresent()" before accessing the value.(èÜ±/8§ıŸ§¸1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8±ß©õ¸1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8±ß©õ¸1
+_
+java:S6813""BRemove this field injection and use constructor injection instead.(êæÄŞ8±ß©õ¸1
+_
+java:S6813%"BRemove this field injection and use constructor injection instead.(êæÄŞ8±ß©õ¸1
