@@ -11,6 +11,7 @@ public interface UserInfoRepository extends CrudRepository<UserInfo, Integer> {
 
 //    @Query(value = "SELECT new com.example.demospringsecurity.dto.request.UpPostRequest()")
     Optional<UserInfo> findByUserName(String userName);
+    Optional<UserInfo> findByUserEmail(String email);
 
     Optional<UserInfo> findByUserId(int userId);
     boolean existsUserInfoByUserEmail(String userEmail);

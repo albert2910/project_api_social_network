@@ -11,11 +11,10 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(type = "object", example = "{\n" +
-        "  \"userName\": \"string\",\n" +
+        "  \"username\": \"string\",\n" +
         "  \"userFullName\": \"string\",\n" +
         "  \"userAvatar\": \"string\",\n" +
         "  \"userEmail\": \"string\",\n" +
-        "  \"userBirthDate\": \"2023-10-29T15:19:18.086Z\",\n" +
         "  \"userAddress\": \"string\"\n" +
         "}")
 public class ChangeInfoUserRequest {

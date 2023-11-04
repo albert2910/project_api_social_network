@@ -1,12 +1,15 @@
 package com.example.demospringsecurity.service;
 
+import com.example.demospringsecurity.dto.DataPasswordResetTokenResponse;
 import com.example.demospringsecurity.dto.RegisterUserSuccess;
 import com.example.demospringsecurity.dto.ReportUserDto;
+import com.example.demospringsecurity.dto.UserViewDto;
 import com.example.demospringsecurity.dto.request.AuthChangePassword;
 import com.example.demospringsecurity.dto.request.AuthRequest;
 import com.example.demospringsecurity.dto.request.ChangeInfoUserRequest;
 import com.example.demospringsecurity.dto.request.RegisterRequest;
 import com.example.demospringsecurity.exceptions.BadRequestException;
+import com.example.demospringsecurity.exceptions.ExpiredException;
 import com.example.demospringsecurity.exceptions.TokenNotFoundException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.mapper.UserChangeInfoMapper;
@@ -130,14 +133,14 @@ public class UserService {
     /**
      * quên mật khẩu trả về token
      *
-     * @param username
+     * @param email
      * @return
      */
-    public PasswordResetTokenResponse forgotPassword(String username) {
+    public PasswordResetTokenResponse forgotPassword(String email) {
         PasswordResetTokenResponse passwordResetTokenResponse = new PasswordResetTokenResponse();
         //        check tài khoản tồn tại bởi username
-        UserInfo userInfo = userInfoRepository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException("Not found user has username: " + username));
+        UserInfo userInfo = userInfoRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Not found user has email: " + email));
 
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserId(userInfo
                 .getUserId());
@@ -149,34 +152,28 @@ public class UserService {
         passwordResetTokenAdd.setPasswordResetToken_datetime(dateResetToken);
         passwordResetTokenAdd.setUserId(userInfo.getUserId());
         passwordResetToken.ifPresent(resetToken -> passwordResetTokenAdd.setPasswordResetTokenId(resetToken.getPasswordResetTokenId()));
-        passwordResetTokenRepository.save(passwordResetTokenAdd);
-        passwordResetTokenResponse.setStatus("200");
-        passwordResetTokenResponse.setResetToken(tokenReset);
-        passwordResetTokenResponse.setMessage("New token: " + passwordResetTokenResponse.getResetToken());
+        PasswordResetToken passwordResetTokenSaved = passwordResetTokenRepository.save(passwordResetTokenAdd);
+        passwordResetTokenResponse.setData(new DataPasswordResetTokenResponse(email, passwordResetTokenSaved.getTokenReset()));
+        passwordResetTokenResponse.setMessage("Please use this new token to login and reset your password!");
 
         return passwordResetTokenResponse;
     }
 
     public PasswordChangeResponse changePassword(AuthChangePassword authChangePassword) {
         PasswordChangeResponse passwordChangeResponse = new PasswordChangeResponse();
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByTokenReset(
+        UserInfo userInfo = userInfoRepository.findByUserEmail(authChangePassword.getEmail()).orElseThrow(() -> new UserNotFoundException("Not found user has email: " + authChangePassword.getEmail()));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findPasswordResetTokenByUserIdAndAndTokenReset(userInfo.getUserId(),
                         authChangePassword.getTokenReset())
                 .orElseThrow(() -> new TokenNotFoundException("Token is invalid!"));
 
         if (!checkTimeTokenReset(passwordResetToken)) {
-            passwordChangeResponse.setStatus("406");
-            passwordChangeResponse.setMessage("Token has expired");
+            throw new ExpiredException("Token has expired!");
         } else {
-            UserInfo userInfo = userInfoRepository.findByUserId(passwordResetToken
-                            .getUserId())
-                    .orElseThrow(() -> new UserNotFoundException("Not found user!"));
-            userInfo
-                    .setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
+            userInfo.setUserPassword(passwordEncoder.encode(authChangePassword.getNewPassword()));
             userInfoRepository.save(userInfo);
             passwordChangeResponse.setStatus("200");
             passwordChangeResponse.setMessage("Reset password success!");
         }
-
         return passwordChangeResponse;
     }
 
@@ -207,42 +204,36 @@ public class UserService {
         ChangeInfoUserResponse changeInfoUserResponse = new ChangeInfoUserResponse();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findByUserName(currentUserName)
-                    .orElseThrow(() -> new UserNotFoundException("Not found User username: " + currentUserName)));
-            changeInfoUserRequest.setUserId(userInfo.get()
+            UserInfo userInfo = userInfoRepository.findByUserName(currentUserName)
+                    .orElseThrow(() -> new UserNotFoundException("Not found User username: " + currentUserName));
+            changeInfoUserRequest.setUserId(userInfo
                     .getUserId());
-            UserInfo userInfoUpdate = userChangeInfoMapper.toEntity(changeInfoUserRequest);
-            if (changeInfoUserRequest.getUserName() == null) {
-                userInfoUpdate.setUserName(userInfo.get()
-                        .getUserName());
+//            UserInfo userInfoUpdate = userChangeInfoMapper.toEntity(changeInfoUserRequest);
+            if (changeInfoUserRequest.getUserName() != null) {
+                userInfo.setUserName(changeInfoUserRequest.getUserName());
             }
-            if (changeInfoUserRequest.getUserFullName() == null) {
-                userInfoUpdate.setUserFullName(userInfo.get()
-                        .getUserFullName());
+            if (changeInfoUserRequest.getUserFullName() != null) {
+                userInfo.setUserFullName(changeInfoUserRequest.getUserFullName());
             }
-            if (changeInfoUserRequest.getUserAvatar() == null) {
-                userInfoUpdate.setUserAvatar(userInfo.get()
-                        .getUserAvatar());
+            if (changeInfoUserRequest.getUserAvatar() != null) {
+                userInfo.setUserAvatar(changeInfoUserRequest.getUserAvatar());
             }
-            if (changeInfoUserRequest.getUserEmail() == null) {
-                userInfoUpdate.setUserEmail(userInfo.get()
-                        .getUserEmail());
+            if (changeInfoUserRequest.getUserEmail() != null) {
+                userInfo.setUserEmail(changeInfoUserRequest.getUserEmail());
             }
-            if (changeInfoUserRequest.getUserBirthDate() == null) {
-                userInfoUpdate.setUserBirthDate(userInfo.get()
-                        .getUserBirthDate());
+            if (changeInfoUserRequest.getUserBirthDate() != null) {
+                userInfo.setUserBirthDate(changeInfoUserRequest.getUserBirthDate());
             }
-            if (changeInfoUserRequest.getUserAddress() == null) {
-                userInfoUpdate.setUserAddress(userInfo.get()
-                        .getUserAddress());
+            if (changeInfoUserRequest.getUserAddress() != null) {
+                userInfo.setUserAddress(changeInfoUserRequest.getUserAddress());
             }
-            userInfoUpdate.setUserPassword(userInfo.get()
-                    .getUserPassword());
-            userInfoUpdate.setRoles("ROLE_USER");
-            userInfoRepository.save(userInfoUpdate);
+
+            userInfo.setRoles("ROLE_USER");
+            UserInfo userInfoSaved = userInfoRepository.save(userInfo);
+            UserViewDto userViewDto = userChangeInfoMapper.toDto(userInfoSaved);
             changeInfoUserResponse.setStatus("200");
             changeInfoUserResponse.setMessage("Update success");
-            changeInfoUserResponse.setUserInfoUpdate(userInfoUpdate);
+            changeInfoUserResponse.setData(userViewDto);
         }
         return changeInfoUserResponse;
     }

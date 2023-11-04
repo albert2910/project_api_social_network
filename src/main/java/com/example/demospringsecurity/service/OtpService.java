@@ -1,6 +1,7 @@
 package com.example.demospringsecurity.service;
 
-import com.example.demospringsecurity.exceptions.OtpExpiredException;
+import com.example.demospringsecurity.exceptions.BadRequestException;
+import com.example.demospringsecurity.exceptions.ExpiredException;
 import com.example.demospringsecurity.exceptions.UserNotFoundException;
 import com.example.demospringsecurity.model.UserInfo;
 import com.example.demospringsecurity.repository.UserInfoRepository;
@@ -24,7 +25,8 @@ public class OtpService {
     JwtService jwtService;
 
     public String sendOtp(String username) {
-        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user userName: " + username));
+        UserInfo userInfo = userInfoRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("Not found user userName: " + username));
         userInfo.setUserOtp(generateOTP());
         LocalDateTime dateCreateOtp = java.time.LocalDateTime.now();
         userInfo.setUserTimeCreateOtp(dateCreateOtp);
@@ -54,10 +56,11 @@ public class OtpService {
 
 
     public OtpResponse verifyOtp(String username, String otp) {
-        UserInfo userInfo = userInfoRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("Not found user username: "+username));
+        UserInfo userInfo = userInfoRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("Not found user username: " + username));
         OtpResponse otpResponse = new OtpResponse();
         if (userInfo.getUserOtp() == null) {
-            throw new OtpExpiredException("OTP otp has expired!");
+            throw new ExpiredException("OTP otp has expired!");
         } else if (checkTimeOtp(userInfo)) {
             if (otp.equals(userInfo.getUserOtp())) {
                 userInfo.setUserOtp(null);
@@ -66,12 +69,9 @@ public class OtpService {
                 otpResponse.setMessage("OTP confirmed!");
                 otpResponse.setStatus("200");
                 otpResponse.setToken(jwtService.generateToken(username));
-            } else {
-                otpResponse.setMessage("OTP does not exist!");
-                otpResponse.setStatus("400");
-            }
+            } else throw new BadRequestException("OTP does not exist!");
         } else {
-            throw new OtpExpiredException("OTP otp has expired!");
+            throw new ExpiredException("OTP otp has expired!");
         }
         return otpResponse;
     }
@@ -80,10 +80,12 @@ public class OtpService {
         LocalDateTime currentDateTime = java.time.LocalDateTime.now();
         long millisOtp = userInfo.getUserTimeCreateOtp()
                 .atZone(ZoneId.systemDefault())
-                .toInstant().toEpochMilli();
+                .toInstant()
+                .toEpochMilli();
         long millisCurrent = currentDateTime
                 .atZone(ZoneId.systemDefault())
-                .toInstant().toEpochMilli();
+                .toInstant()
+                .toEpochMilli();
         long millis = millisCurrent - millisOtp;
         if (millis < 60000) {
             return true;

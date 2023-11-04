@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.GONE)
-public class OtpExpiredException extends RuntimeException{
-    public OtpExpiredException(String message) {
+public class ExpiredException extends RuntimeException{
+    public ExpiredException(String message) {
         super(message);
     }
 }

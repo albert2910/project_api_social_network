@@ -50,13 +50,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(OtpExpiredException.class)
-    public ResponseEntity<Map<String, List<String>>> handleOtpExpiredException(OtpExpiredException ex) {
+    @ExceptionHandler(ExpiredException.class)
+    public ResponseEntity<Map<String, List<String>>> handleOtpExpiredException(ExpiredException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.GONE);
     }
     @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity<Map<String, List<String>>> handleTokenNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<Map<String, List<String>>> handleTokenNotFoundException(TokenNotFoundException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }

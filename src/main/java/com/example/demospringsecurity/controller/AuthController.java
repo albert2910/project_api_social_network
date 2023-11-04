@@ -45,8 +45,8 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public PasswordResetTokenResponse forgotPassword(@RequestParam String username) {
-        return userService.forgotPassword(username);
+    public PasswordResetTokenResponse forgotPassword(@RequestParam String email) {
+        return userService.forgotPassword(email);
     }
 
     @PatchMapping("/change-password")
