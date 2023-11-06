@@ -169,3 +169,7 @@ u
 Esrc/main/java/com/example/demospringsecurity/mapper/FriendMapper.java,b\7\b7077ccfe38c6ddcdf59b7389c772b1c8e50688a
 }
 Msrc/main/java/com/example/demospringsecurity/mapperImpl/FriendMapperImpl.java,f\9\f9ebcff5c922930052d17d2096548287d60e39ab
+‹
+[src/main/java/com/example/demospringsecurity/response/friend/GetFriendRequestsResponse.java,6\7\67106e7d27e17b943b61095d0c2a9b2148e3cff4
+‡
+Wsrc/main/java/com/example/demospringsecurity/response/friend/GetListFriendResponse.java,2\c\2c05eb9dfaa0c6ce391e8a25db4d3d613d7a8d5e

@@ -1,5 +1,6 @@
 package com.example.demospringsecurity.response.friend;
 
+import com.example.demospringsecurity.dto.FriendDto;
 import com.example.demospringsecurity.model.Friend;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetFriendRequestsResponse {
-    private String status;
     private String message;
-    private List<Friend> friendRequests;
+    private List<FriendDto> friendRequests;
 }

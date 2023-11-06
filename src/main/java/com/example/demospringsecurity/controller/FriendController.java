@@ -23,9 +23,14 @@ public class FriendController {
         return friendService.acceptFriend(usernameSender);
     }
 
+    @PostMapping("/{usernameSender}/reject")
+    public FriendResponse declineFriendRequest(@RequestParam String usernameSender) {
+        return friendService.declineFriendRequest(usernameSender);
+    }
+
     @PostMapping("/{usernameReceiver}/unfriend")
-    public FriendResponse unFriend(@RequestParam String usernameReceiver) {
-        return friendService.unFriend(usernameReceiver);
+    public FriendResponse unfriend(@RequestParam String usernameReceiver) {
+        return friendService.unfriend(usernameReceiver);
     }
 
     @GetMapping("/requests")

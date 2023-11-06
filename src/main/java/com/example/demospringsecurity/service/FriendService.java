@@ -183,64 +183,42 @@ public class FriendService {
         return acceptFriendResponse;
     }
 
-    public GetFriendRequestsResponse getAllFriendRequestsByCurrentUser() {
-        GetFriendRequestsResponse getFriendRequestsResponse = new GetFriendRequestsResponse();
+    public FriendResponse declineFriendRequest(String usernameSender) {
+        FriendRequest friendRequest = new FriendRequest();
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             UserInfo currentUser = userInfoRepository.findByUserName(currentUserName)
-                    .get();
-            List<Friend> friendRequests = friendRepository.findFriendByUserReceiverIdAndAndStatus(currentUser.getUserId(),
-                    1);
-            getFriendRequestsResponse.setStatus("200");
-            getFriendRequestsResponse.setMessage("Get all friend requests successfully!");
-            getFriendRequestsResponse.setFriendRequests(friendRequests);
-        } else {
-            getFriendRequestsResponse.setStatus("401");
-            getFriendRequestsResponse.setMessage("Token is invalid!");
-            getFriendRequestsResponse.setFriendRequests(null);
+                    .orElseThrow(() -> new UserNotFoundException("Not found user has username: " + currentUserName));
+            friendRequest.setUserReceiverId(currentUser.getUserId());
         }
-        return getFriendRequestsResponse;
+        UserInfo userSender = userInfoRepository.findByUserName(usernameSender)
+                .orElseThrow(() -> new UserNotFoundException("Not found user has username: " + usernameSender));
+        friendRequest.setUserSenderId(userSender.getUserId());
+        //        decline ban than minh
+        if (userSender.getUserId() == friendRequest.getUserReceiverId()) {
+            throw new BadRequestException("You can not decline yourself!");
+        }
+        FriendResponse declineFriendRequestResponse = new FriendResponse();
+
+        Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderIdAndAndStatus(friendRequest.getUserReceiverId(),
+                friendRequest.getUserSenderId(),
+                1);
+        if (friend != null) {
+            friend.setStatus(0);
+            Friend friendSaved = friendRepository.save(friend);
+            FriendDto friendDto = friendMapper.toDto(friendSaved);
+            declineFriendRequestResponse.setMessage("Decline user " + userSender.getUserName() + "successfully!");
+            declineFriendRequestResponse.setFriend(friendDto);
+        } else {
+            throw new BadRequestException("Not found friend request has user "+ usernameSender+"!");
+        }
+
+        return declineFriendRequestResponse;
     }
 
-    public GetListFriendResponse getListFriends() {
-        GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUserName = authentication.getName();
-            getListFriendResponse.setCurrentUserName(currentUserName);
-            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName)
-                    .get();
-            List<Friend> friends = friendRepository.findListFriendByCurrentUserId(currentUser.getUserId());
-            List<String> userNameFriends = new ArrayList<>();
-            Set<Integer> idFriends = new LinkedHashSet<>();
-            for (Friend friend : friends) {
-                if (friend.getUserSenderId() != currentUser.getUserId()) {
-                    idFriends.add(friend.getUserSenderId());
-                }
-                if (friend.getUserReceiverId() != currentUser.getUserId()) {
-                    idFriends.add(friend.getUserReceiverId());
-                }
-            }
-            for (Integer idFriend : idFriends) {
-                userNameFriends.add(userInfoRepository.findById(idFriend)
-                        .get()
-                        .getUserName());
-            }
-            getListFriendResponse.setStatus("200");
-            getListFriendResponse.setMessage("Get your list friend successfully!");
-            getListFriendResponse.setUserNameFriends(userNameFriends);
-        } else {
-            getListFriendResponse.setStatus("401");
-            getListFriendResponse.setMessage("Token is invalid!");
-            getListFriendResponse.setUserNameFriends(null);
-        }
-        return getListFriendResponse;
-    }
-
-    public FriendResponse unFriend(String usernameReceiver) {
+    public FriendResponse unfriend(String usernameReceiver) {
         FriendRequest friendRequest = new FriendRequest();
         UserInfo userInfo = userInfoRepository.findByUserName(usernameReceiver)
                 .orElseThrow(() -> new UserNotFoundException("Not found user has username: " + usernameReceiver));
@@ -262,16 +240,17 @@ public class FriendService {
 
         Friend friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserReceiverId(),
                 friendRequest.getUserSenderId());
-        Friend friend1 = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserSenderId(),
-                friendRequest.getUserReceiverId());
 
-        if (friend == null && friend1 == null) {
-            throw new BadRequestException("Are not friend! Can not unfriend!");
+        if (friend == null) {
+            friend = friendRepository.findFriendByUserReceiverIdAndAndUserSenderId(friendRequest.getUserSenderId(),
+                    friendRequest.getUserReceiverId());
+            if (friend == null) {
+                throw new BadRequestException("Are not friend! Can not unfriend!");
+            }
         }
 //      cả hai chưa là bạn
         if (friend.getStatus() == 0) {
             throw new BadRequestException("Are not friend! Can not unfriend!");
-
         }
 //      đang gửi lời mời kết bạn
         if (friend.getStatus() == 1) {
@@ -284,9 +263,55 @@ public class FriendService {
             FriendDto friendDto = friendMapper.toDto(friendSaved);
             unFriendResponse.setMessage("Unfriend is successful! You must have had difficulty making a decision..");
             unFriendResponse.setFriend(friendDto);
-            return unFriendResponse;
         }
         return unFriendResponse;
+    }
+
+    public GetFriendRequestsResponse getAllFriendRequestsByCurrentUser() {
+        GetFriendRequestsResponse getFriendRequestsResponse = new GetFriendRequestsResponse();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName)
+                    .get();
+            List<Friend> friends = friendRepository.findFriendByUserReceiverIdAndAndStatus(currentUser.getUserId(),
+                    1);
+            List<FriendDto> friendRequests = friendMapper.toListDto(friends);
+            getFriendRequestsResponse.setMessage("Get all friend requests successfully!");
+            getFriendRequestsResponse.setFriendRequests(friendRequests);
+        }
+        return getFriendRequestsResponse;
+    }
+
+    public GetListFriendResponse getListFriends() {
+        GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            getListFriendResponse.setCurrentUserName(currentUserName);
+            UserInfo currentUser = userInfoRepository.findByUserName(currentUserName).orElseThrow(()-> new UserNotFoundException("Not found user!"));
+            List<Friend> friends = friendRepository.findListFriendByCurrentUserId(currentUser.getUserId());
+            List<String> userNameFriends = new ArrayList<>();
+            Set<Integer> idFriends = new LinkedHashSet<>();
+            for (Friend friend : friends) {
+                if (friend.getUserSenderId() != currentUser.getUserId()) {
+                    idFriends.add(friend.getUserSenderId());
+                }
+                if (friend.getUserReceiverId() != currentUser.getUserId()) {
+                    idFriends.add(friend.getUserReceiverId());
+                }
+            }
+            for (Integer idFriend : idFriends) {
+                userNameFriends.add(userInfoRepository.findById(idFriend)
+                        .get()
+                        .getUserName());
+            }
+            getListFriendResponse.setMessage("Get your list friend successfully!");
+            getListFriendResponse.setUserNameFriends(userNameFriends);
+        }
+        return getListFriendResponse;
     }
 
 

@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetListFriendResponse {
-    private String status;
     private String message;
     private String currentUserName;
     private List<String> userNameFriends;

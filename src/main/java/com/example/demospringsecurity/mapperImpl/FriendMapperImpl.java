@@ -9,6 +9,9 @@ import com.example.demospringsecurity.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class FriendMapperImpl implements FriendMapper {
     @Autowired
@@ -27,5 +30,14 @@ public class FriendMapperImpl implements FriendMapper {
         friendDto.setUsernameSender(userSender.getUserName());
         friendDto.setId(entity.getId());
         return friendDto;
+    }
+
+    @Override
+    public List<FriendDto> toListDto(List<Friend> entity) {
+        List<FriendDto> friendDtoList = new ArrayList<>();
+        for (Friend friend : entity) {
+            friendDtoList.add(toDto(friend));
+        }
+        return friendDtoList;
     }
 }

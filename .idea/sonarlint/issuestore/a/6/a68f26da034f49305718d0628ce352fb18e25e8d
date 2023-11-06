@@ -1,17 +1,15 @@
 
+r
+java:S1192/"PDefine a constant instead of duplicating this literal "Not found user!" 3 times.(±ìÁşÿÿÿÿ8òÅËŸº1
 |
-java:S1192“"^Define a constant instead of duplicating this literal "Not found user has username: " 3 times.(åÒÛê8³Ú¾›º1
+java:S1192“"^Define a constant instead of duplicating this literal "Not found user has username: " 5 times.(åÒÛê8µ´ÇŸº1
 t
-java:S1192c"WDefine a constant instead of duplicating this literal "Sent a friend request!" 3 times.(ÌÈ˜8³Ú¾›º1
+java:S1192c"WDefine a constant instead of duplicating this literal "Sent a friend request!" 3 times.(ÌÈ˜8µ´ÇŸº1
 U
-java:S3655Ö"7Call "Optional#isPresent()" before accessing the value.(Ü©ı8ÜÚ¾›º1
-U
-java:S3655À"7Call "Optional#isPresent()" before accessing the value.(Ü©ı8ÜÚ¾›º1
-U
-java:S3655ä"7Call "Optional#isPresent()" before accessing the value.(çİÄÒ8ÜÚ¾›º1
+java:S3655³"7Call "Optional#isPresent()" before accessing the value.(çİÄÒ8õ´ÇŸº1
 _
-java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8İÚ¾›º1
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8ö´ÇŸº1
 _
-java:S6813!"BRemove this field injection and use constructor injection instead.(êæÄŞ8İÚ¾›º1
+java:S6813!"BRemove this field injection and use constructor injection instead.(êæÄŞ8ö´ÇŸº1
 _
-java:S6813#"BRemove this field injection and use constructor injection instead.(êæÄŞ8İÚ¾›º1
+java:S6813#"BRemove this field injection and use constructor injection instead.(êæÄŞ8ö´ÇŸº1
