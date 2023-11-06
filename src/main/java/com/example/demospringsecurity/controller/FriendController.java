@@ -13,19 +13,19 @@ public class FriendController {
     @Autowired
     FriendService friendService;
 
-    @PostMapping("/{userReceiverId}/add-friend")
-    public FriendResponse addFriend(@PathVariable int userReceiverId) {
-        return friendService.addFriend(userReceiverId);
+    @PostMapping("/{usernameReceiver}/add-friend")
+    public FriendResponse addFriend(@RequestParam String usernameReceiver) {
+        return friendService.addFriend(usernameReceiver);
     }
 
-    @PostMapping("/{userSenderId}/accept-friend")
-    public FriendResponse acceptFriend(@PathVariable int userSenderId) {
-        return friendService.acceptFriend(userSenderId);
+    @PostMapping("/{usernameSender}/accept-friend")
+    public FriendResponse acceptFriend(@RequestParam String usernameSender) {
+        return friendService.acceptFriend(usernameSender);
     }
 
-    @PostMapping("/{userReceiverId}/unfriend")
-    public FriendResponse unFriend(@PathVariable int userReceiverId) {
-        return friendService.unFriend(userReceiverId);
+    @PostMapping("/{usernameReceiver}/unfriend")
+    public FriendResponse unFriend(@RequestParam String usernameReceiver) {
+        return friendService.unFriend(usernameReceiver);
     }
 
     @GetMapping("/requests")

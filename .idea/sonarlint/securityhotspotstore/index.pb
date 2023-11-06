@@ -161,3 +161,11 @@ Asrc/main/java/com/example/demospringsecurity/dto/UserViewDto.java,5\f\5f44ed82
 Msrc/main/java/com/example/demospringsecurity/mapper/UserChangeInfoMapper.java,f\9\f97491a863fc2c486b31cca57a27a54ca9c9692a
 …
 Usrc/main/java/com/example/demospringsecurity/mapperImpl/UserChangeInfoMapperImpl.java,c\7\c7522f2d7efbcb69f5885a1f6012fc7cada00327
+€
+Psrc/main/java/com/example/demospringsecurity/response/friend/FriendResponse.java,1\b\1b4617e1e0b26817b4642e3f26cf0c81cba2a819
+o
+?src/main/java/com/example/demospringsecurity/dto/FriendDto.java,2\2\221890ef0d3f77b76b7aa865771df61ab1533c74
+u
+Esrc/main/java/com/example/demospringsecurity/mapper/FriendMapper.java,b\7\b7077ccfe38c6ddcdf59b7389c772b1c8e50688a
+}
+Msrc/main/java/com/example/demospringsecurity/mapperImpl/FriendMapperImpl.java,f\9\f9ebcff5c922930052d17d2096548287d60e39ab
