@@ -24,12 +24,13 @@ public class UserChangeInfoMapperImpl implements UserChangeInfoMapper {
     @Override
     public UserViewDto toDto(UserInfo entity) {
         UserViewDto userViewDto = new UserViewDto();
+        userViewDto.setUserId(entity.getUserId());
         userViewDto.setUsername(entity.getUserName());
         userViewDto.setUserFullName(entity.getUserFullName());
         userViewDto.setUserAvatar(entity.getUserAvatar());
         userViewDto.setUserEmail(entity.getUserEmail());
         userViewDto.setUserBirthDate(entity.getUserBirthDate());
         userViewDto.setUserAddress(entity.getUserAddress());
-        return null;
+        return userViewDto;
     }
 }

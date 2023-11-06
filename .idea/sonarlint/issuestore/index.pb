@@ -131,8 +131,6 @@ Tsrc/main/java/com/example/demospringsecurity/exceptions/FriendNotFoundException
 Ssrc/main/java/com/example/demospringsecurity/exceptions/NotPermissionException.java,8\3\83bcc31d42bf1e51ea4ef12cf3971c6981b381bf
 |
 Lsrc/main/java/com/example/demospringsecurity/response/like/LikeResponse.java,c\a\cad6cd14fc74b817726b4df12d4539ce7e6b0a65
-€
-Psrc/main/java/com/example/demospringsecurity/exceptions/OtpExpiredException.java,e\6\e6fe278a76f1f193c646dfa293fd7768f5ddddb2
 
 Osrc/main/java/com/example/demospringsecurity/mapperImpl/PostViewMapperImpl.java,c\9\c974a3bd7290e431d12abd51e4705e1c2c704c67
 v

@@ -27,3 +27,5 @@ _
 java:S6813T"BRemove this field injection and use constructor injection instead.(êæÄŞ8ª Ï¹1
 G	java:S106·"+Replace this use of System.out by a logger.(·ë€S8µ Ï¹1
 ^	java:S125Ó"<This block of commented-out lines of code should be removed.(½öŸ÷ùÿÿÿÿ8· Ï¹1
+s
+java:S1128!"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8¤¿’º1
